@@ -39,7 +39,7 @@ function kindFromParam(raw: string | null): IssueKind {
   ) {
     return raw
   }
-  // Default like goodfirstissue.dev
+  // Default: beginner-friendly issues on popular repos
   return 'good-first'
 }
 
@@ -84,7 +84,7 @@ const IssuesPage: React.FC = () => {
       <header className="mb-7">
         <h1 className="font-display text-3xl font-medium text-ink dark:text-white">Issues</h1>
         <p className="mt-1 text-sm text-ink-muted">
-          Browse by language — popular repos (100+ stars), grouped like goodfirstissue.dev.
+          Browse by language — open issues on popular repos with 100+ stars.
         </p>
       </header>
 

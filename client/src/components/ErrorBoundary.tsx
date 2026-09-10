@@ -78,7 +78,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 this.setState({ hasError: false, error: null })
                 window.location.reload()
               }}
-              className="mt-6 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-slate-100 dark:text-gray-900 dark:hover:bg-slate-200"
+              className="btn-primary mt-6"
             >
               Refresh Page
             </button>

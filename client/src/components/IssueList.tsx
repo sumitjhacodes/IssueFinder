@@ -57,7 +57,7 @@ function groupByRepo(items: GithubIssueItem[]): RepoGroup[] {
 }
 
 /**
- * goodfirstissue.dev-style layout: repos first, issues nested underneath.
+ * Repo-first layout: group issues under each repository.
  */
 const IssueList: React.FC<IssueListProps> = ({
   className = '',

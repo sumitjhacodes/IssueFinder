@@ -85,10 +85,16 @@ const Hero: React.FC = () => {
             {TAGLINE}
           </p>
           <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <Link to="/issues?kind=good-first" className="btn-primary px-8 py-3.5 text-base">
+            <Link
+              to="/issues?kind=good-first"
+              className="inline-flex items-center justify-center rounded-md bg-ink px-8 py-3.5 font-sans text-[15px] font-medium tracking-[-0.01em] text-white transition hover:bg-zinc-800 dark:bg-white dark:text-ink dark:hover:bg-zinc-200"
+            >
               Find my next issue
             </Link>
-            <Link to="/bounty" className="btn-secondary px-8 py-3.5 text-base">
+            <Link
+              to="/bounty"
+              className="inline-flex items-center justify-center rounded-md border border-paper-line bg-white px-8 py-3.5 font-sans text-[15px] font-medium tracking-[-0.01em] text-ink transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+            >
               Browse paid bounties
             </Link>
           </div>

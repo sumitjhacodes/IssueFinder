@@ -75,6 +75,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
 
   const navItems = [
     { to: '/issues', label: 'Issues' },
+    { to: '/bounty', label: 'Bounties' },
     { to: '/categories', label: 'Categories' },
     { to: '/repositories', label: 'Repos' },
     { to: '/beginner-guide', label: 'Guide' },

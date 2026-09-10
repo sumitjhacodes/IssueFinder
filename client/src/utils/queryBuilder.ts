@@ -34,6 +34,7 @@ export const GITHUB_LANGUAGE_NAMES: Record<string, string> = {
   ruby: 'Ruby',
   swift: 'Swift',
   kotlin: 'Kotlin',
+  solidity: 'Solidity',
 }
 
 /** Popular enough to be maintained, low enough that every language still returns results */

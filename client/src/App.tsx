@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -9,10 +9,20 @@ import RepositoriesPage from './pages/RepositoriesPage'
 import BeginnerGuidePage from './pages/BeginnerGuidePage'
 import CategoriesPage from './pages/CategoriesPage'
 import { useSearch } from './contexts/SearchContext'
+import { prefetchIssues } from './hooks/useFetchIssues'
+import { buildGitHubQuery } from './utils/queryBuilder'
 
 const AppContent: React.FC = () => {
   const { searchTerm, setSearchTerm, submitSearch } = useSearch()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    prefetchIssues(
+      buildGitHubQuery({ selectedKind: 'good-first', selectedLastActivity: 'any' }),
+      1,
+      50
+    )
+  }, [])
 
   const onSubmitSearch = () => {
     if (searchTerm.trim()) {
@@ -30,17 +40,17 @@ const AppContent: React.FC = () => {
         onSubmitSearch={onSubmitSearch}
       />
       <div className="flex-1">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/issues" element={<IssuesPage />} />
-        <Route path="/search" element={<SearchResultsPage />} />
-        <Route path="/repositories" element={<RepositoriesPage />} />
-        <Route path="/beginner-guide" element={<BeginnerGuidePage />} />
-        <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/bounty" element={<Navigate to="/issues" replace />} />
-        <Route path="/dashboard" element={<Navigate to="/issues" replace />} />
-        <Route path="/contributor/:username" element={<Navigate to="/issues" replace />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/issues" element={<IssuesPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="/repositories" element={<RepositoriesPage />} />
+          <Route path="/beginner-guide" element={<BeginnerGuidePage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/bounty" element={<Navigate to="/issues" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/issues" replace />} />
+          <Route path="/contributor/:username" element={<Navigate to="/issues" replace />} />
+        </Routes>
       </div>
       <Footer
         githubUrl="https://github.com/sumitjhacodes"

@@ -22,6 +22,7 @@ export type GithubIssueItem = {
   created_at: string
   updated_at?: string
   comments?: number
+  body?: string | null
 }
 
 export type GithubSearchResponse = {

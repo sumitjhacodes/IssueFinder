@@ -72,11 +72,11 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-ink dark:hover:bg-zinc-200;
+    @apply inline-flex items-center justify-center rounded-md bg-ink px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-white transition hover:bg-zinc-800 dark:bg-white dark:text-ink dark:hover:bg-zinc-200;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-md border border-paper-line bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800;
+    @apply inline-flex items-center justify-center rounded-md border border-paper-line bg-white px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-ink transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800;
   }
 
   .surface {

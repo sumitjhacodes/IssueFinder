@@ -1,231 +1,142 @@
+export type IssueKind =
+  | 'all'
+  | 'good-first'
+  | 'help-wanted'
+  | 'bug'
+  | 'documentation'
+
 export type QueryBuilderParams = {
   searchTerm?: string
-  selectedLabels?: string[]
-  selectedCategories?: string[]
   selectedLanguage?: string | null
-  selectedLicense?: string | null
+  selectedLastActivity?: string | null
+  selectedRepo?: string | null
+  selectedKind?: IssueKind | null
+  selectedCategories?: string[]
   selectedDifficulty?: string | null
+  selectedLabels?: string[]
   selectedType?: string | null
   selectedFramework?: string | null
-  selectedLastActivity?: string | null
+  selectedLicense?: string | null
 }
 
-function getDifficultyLabels(difficulty: string | null): { include: string[], exclude?: string[] } {
-  if (!difficulty) return { include: [] }
-  
-  const difficultyMap: Record<string, { include: string[], exclude?: string[] }> = {
-    beginner: {
-      include: [
-        'good first issue',      // Most common - used by thousands of repos
-        'good-first-issue',
-      ],
-    },
-    intermediate: {
-      include: [
-        'help wanted',           // Most common - used by thousands of repos
-        'help-wanted',           // Hyphenated version (also very common)
-      ],
-      exclude: [
-        'good first issue',      // Exclude beginner labels to avoid overlap
-        'good-first-issue',
-      ]
-    },
-    advanced: {
-      include: [
-        'expert',                // Common label for advanced issues
-        'advanced',              // Direct label
-        'hard',                  // Simple common label
-        'difficult',             // Alternative
-        'complex',               // Alternative
-        'challenging',
-      ],
-      exclude: [
-        'good first issue',      // Exclude beginner labels
-        'good-first-issue',
-        'first-timers-only',
-        'help wanted',           // Exclude intermediate labels
-        'help-wanted',
-      ]
-    }
-  }
-  
-  return difficultyMap[difficulty] || { include: [] }
+/** URL/UI slug → GitHub language name */
+export const GITHUB_LANGUAGE_NAMES: Record<string, string> = {
+  python: 'Python',
+  typescript: 'TypeScript',
+  javascript: 'JavaScript',
+  rust: 'Rust',
+  go: 'Go',
+  java: 'Java',
+  cpp: 'C++',
+  c: 'C',
+  csharp: 'C#',
+  php: 'PHP',
+  ruby: 'Ruby',
+  swift: 'Swift',
+  kotlin: 'Kotlin',
 }
 
-function getFrameworkSearch(framework: string | null): string {
-  if (!framework) return ''
-  
-  const frameworkMap: Record<string, string> = {
-    react: 'react',
-    vue: 'vue',
-    angular: 'angular',
-    nextjs: 'next.js',
-    nuxt: 'nuxt',
-    svelte: 'svelte',
-    express: 'express',
-    django: 'django',
-    flask: 'flask',
-    rails: 'rails',
-    spring: 'spring',
-    laravel: 'laravel',
-    fastapi: 'fastapi',
-    nestjs: 'nestjs'
-  }
-  
-  const searchTerm = frameworkMap[framework]
-  if (!searchTerm) return ''
-  
-  return searchTerm
+/** Popular enough to be maintained, low enough that every language still returns results */
+export const MIN_REPO_STARS = 100
+
+function formatDate(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
 }
 
-function getLastActivityQuery(activity: string | null): string {
-  if (!activity) return ''
-  
-  try {
-    const now = new Date()
-    let date: Date
-    
-    switch (activity) {
-      case 'last-week':
-        date = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        break
-      case 'last-month':
-        date = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-        break
-      case 'last-3months':
-        date = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
-        break
-      case 'active':
-        date = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        break
-      default:
-        return ''
-    }
-    
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const dateStr = `${year}-${month}-${day}`
-    
-    return `updated:>${dateStr}`
-  } catch (error) {
-    console.error('Error generating last activity query:', error)
-    return ''
+function labelForKind(kind: IssueKind | null | undefined): string | null {
+  switch (kind) {
+    case 'good-first':
+      return 'good first issue'
+    case 'help-wanted':
+      return 'help wanted'
+    case 'bug':
+      return 'bug'
+    case 'documentation':
+      return 'documentation'
+    case 'all':
+    case null:
+    case undefined:
+      return null
+    default:
+      return null
   }
 }
 
+function resolveLabel(params: QueryBuilderParams): string | null {
+  if (params.selectedKind != null) return labelForKind(params.selectedKind)
+
+  if (params.selectedDifficulty === 'intermediate') return 'help wanted'
+  if (params.selectedDifficulty === 'beginner') return 'good first issue'
+  if (params.selectedCategories?.length && !params.selectedCategories.includes('all')) {
+    return params.selectedCategories[0]
+  }
+  if (params.selectedType) return params.selectedType
+  if (params.selectedLabels?.length) return params.selectedLabels[0]
+
+  // Match goodfirstissue.dev default surface
+  return 'good first issue'
+}
+
+function activityDays(selected: string | null | undefined): number | null {
+  switch (selected) {
+    case 'last-week':
+      return 7
+    case 'last-2weeks':
+      return 14
+    case 'last-month':
+      return 30
+    case 'last-3months':
+      return 90
+    case 'any':
+    case null:
+    case undefined:
+      return null
+    default:
+      return null
+  }
+}
+
+export function toGitHubLanguageQualifier(slugOrName: string): string {
+  const key = slugOrName.trim().toLowerCase()
+  const name = GITHUB_LANGUAGE_NAMES[key] ?? slugOrName.trim()
+  if (/[^a-zA-Z0-9]/.test(name)) return `language:"${name}"`
+  return `language:${name}`
+}
+
+/**
+ * goodfirstissue.dev-style search:
+ * open issues on popular repos, optional label + language.
+ * Avoid stacking filters that zero out results.
+ */
 export function buildGitHubQuery(params: QueryBuilderParams): string {
-  const parts: string[] = []
-  
-  parts.push('state:open')
-  parts.push('type:issue')
-  parts.push('no:assignee')
-  
-  const now = new Date()
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  const sevenDaysAgoStr = `${sevenDaysAgo.getFullYear()}-${String(sevenDaysAgo.getMonth() + 1).padStart(2, '0')}-${String(sevenDaysAgo.getDate()).padStart(2, '0')}`
-  
-  if (params.selectedLastActivity) {
-    const activityQuery = getLastActivityQuery(params.selectedLastActivity)
-    if (activityQuery) {
-      parts.push(activityQuery)
-    } else {
-      parts.push(`updated:>${sevenDaysAgoStr}`)
-    }
-  } else {
-    parts.push(`updated:>${sevenDaysAgoStr}`)
+  const parts = ['is:open', 'is:issue', `stars:>${MIN_REPO_STARS - 1}`]
+
+  const label = resolveLabel(params)
+  if (label) parts.push(`label:"${label}"`)
+
+  if (params.selectedRepo?.trim()) {
+    parts.push(`repo:${params.selectedRepo.trim()}`)
   }
-  
-  if (params.selectedDifficulty) {
-    const difficultyConfig = getDifficultyLabels(params.selectedDifficulty)
-    
-    if (params.selectedDifficulty === 'advanced') {
-      // Don't reset parts array - keep the date filter and other filters
-      // Just add the advanced difficulty labels
-      parts.push('(label:"expert" OR label:"advanced" OR label:"hard" OR label:"difficult" OR label:"complex" OR label:"challenging")')
-      parts.push('-label:"good first issue"')
-      parts.push('-label:"good-first-issue"')
-      parts.push('-label:"first-timers-only"')
-      parts.push('-label:"help wanted"')
-      parts.push('-label:"help-wanted"')
-    } else {
-      if (difficultyConfig.include.length > 0) {
-        if (difficultyConfig.include.length === 1) {
-          parts.push(`label:"${difficultyConfig.include[0]}"`)
-        } else {
-          const includeLabels = difficultyConfig.include.map(label => `label:"${label}"`).join(' OR ')
-          parts.push(`(${includeLabels})`)
-        }
-        
-        if (difficultyConfig.exclude && difficultyConfig.exclude.length > 0) {
-          difficultyConfig.exclude.forEach(label => {
-            parts.push(`-label:"${label}"`)
-          })
-        }
-      }
-    }
+
+  const days = activityDays(params.selectedLastActivity)
+  if (days != null) {
+    parts.push(`updated:>${formatDate(new Date(Date.now() - days * 24 * 60 * 60 * 1000))}`)
   }
-  
-  // Add search term (works with all difficulty levels)
-  if (params.searchTerm && params.searchTerm.trim()) {
+
+  if (params.selectedLanguage) {
+    parts.push(toGitHubLanguageQualifier(params.selectedLanguage))
+  }
+
+  if (params.selectedFramework) {
+    parts.push(params.selectedFramework)
+  }
+
+  if (params.searchTerm?.trim()) {
     parts.push(params.searchTerm.trim())
   }
-  
-  // Add framework filter (works with all difficulty levels)
-  if (params.selectedFramework) {
-    const frameworkQuery = getFrameworkSearch(params.selectedFramework)
-    if (frameworkQuery) {
-      parts.push(frameworkQuery)
-    }
-  }
-  
-  // Add language filter (works with all difficulty levels)
-  if (params.selectedLanguage) {
-    parts.push(`language:${params.selectedLanguage}`)
-  }
-  
-  // Add category filters (only if no difficulty is selected, or if it's not advanced)
-  if (params.selectedDifficulty !== 'advanced' && params.selectedCategories && params.selectedCategories.length > 0 && !params.selectedCategories.includes('all')) {
-    const categoryQueries = params.selectedCategories.map((cat) => `label:"${cat}"`)
-    if (categoryQueries.length === 1) {
-      parts.push(categoryQueries[0])
-    } else if (categoryQueries.length > 1) {
-      parts.push(`(${categoryQueries.join(' OR ')})`)
-    }
-  }
-  
-  // Add type filter (only if no difficulty is selected, or if it's not advanced)
-  if (params.selectedDifficulty !== 'advanced' && params.selectedType) {
-    if (!params.selectedCategories || !params.selectedCategories.includes(params.selectedType)) {
-      parts.push(`label:"${params.selectedType}"`)
-    }
-  }
-  
-  // Add custom labels (works with all difficulty levels)
-  if (params.selectedLabels && params.selectedLabels.length > 0) {
-    params.selectedLabels.forEach((l) => parts.push(`label:"${l}"`))
-  }
-  
-  
-  const query = parts.join(' ')
-  
-  const hasAnyFilter = params.selectedDifficulty || 
-                       params.selectedType || 
-                       params.selectedFramework || 
-                       params.selectedLanguage ||
-                       params.selectedLicense ||
-                       params.selectedLastActivity ||
-                       (params.selectedCategories && params.selectedCategories.length > 0 && !params.selectedCategories.includes('all')) ||
-                       (params.selectedLabels && params.selectedLabels.length > 0) ||
-                       (params.searchTerm && params.searchTerm.trim())
-  
-  const baseDateFilter = `updated:>${sevenDaysAgoStr}`
-  
-  // If no filters are applied, show good first issues and help wanted
-  if (!hasAnyFilter && query === `state:open type:issue no:assignee ${baseDateFilter}`) {
-    return `state:open type:issue no:assignee ${baseDateFilter} (label:"good first issue" OR label:"help wanted")`
-  }
-  
-  return query
-}
 
+  return parts.join(' ')
+}

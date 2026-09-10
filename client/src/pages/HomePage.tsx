@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Hero from '../components/Hero'
-import { TAGLINE } from '../constants/brand'
+import { TAGLINE, BUY_ME_A_COFFEE_URL } from '../constants/brand'
 
 const steps = [
   {
@@ -128,6 +128,18 @@ const HomePage: React.FC = () => {
                 Explore categories
               </Link>
             </div>
+            <p className="mx-auto mt-10 max-w-md text-sm leading-relaxed text-ink-muted">
+              Built in spare time and kept free.{' '}
+              <a
+                href={BUY_ME_A_COFFEE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center rounded-md border border-accent/40 bg-accent/10 px-2.5 py-0.5 font-medium text-ink underline-offset-2 transition hover:border-accent hover:bg-accent/15 dark:border-accent/50 dark:bg-accent/10 dark:text-white dark:hover:bg-accent/20"
+              >
+                Buy me a coffee
+              </a>{' '}
+              if IssueFinder helped you — no pressure at all.
+            </p>
           </div>
         </section>
       </main>

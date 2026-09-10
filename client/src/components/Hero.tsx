@@ -78,22 +78,29 @@ const Hero: React.FC = () => {
             {PRODUCT_NAME}
           </p>
           <h1 className="mt-5 font-display text-4xl font-medium leading-[1.12] text-ink sm:text-5xl dark:text-white">
-            The fastest path to your first open-source PR
+            Stop hunting for issues.
+            <span className="block text-ink-muted dark:text-zinc-400">Start landing PRs.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-ink-muted sm:text-xl dark:text-zinc-400">
             {TAGLINE}
           </p>
           <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <Link to="/issues" className="btn-primary px-7 py-3 text-base">
-              Browse issues
+            <Link to="/issues?kind=good-first" className="btn-primary px-8 py-3.5 text-base">
+              Find my next issue
             </Link>
-            <Link
-              to="/beginner-guide"
-              className="text-sm font-semibold text-ink-soft underline-offset-4 hover:underline dark:text-zinc-300"
-            >
-              New here? Read the guide →
+            <Link to="/bounty" className="btn-secondary px-8 py-3.5 text-base">
+              Browse paid bounties
             </Link>
           </div>
+          <p className="mt-4 text-sm text-ink-muted">
+            New to open source?{' '}
+            <Link
+              to="/beginner-guide"
+              className="font-semibold text-ink underline-offset-4 hover:underline dark:text-zinc-200"
+            >
+              Read the guide
+            </Link>
+          </p>
         </div>
 
         <div className="mx-auto mt-14 max-w-3xl">
@@ -140,8 +147,8 @@ const Hero: React.FC = () => {
                   ))}
             </ul>
             <div className="border-t border-paper-line bg-zinc-50/80 px-4 py-3 text-center dark:border-zinc-800 dark:bg-zinc-950/50">
-              <Link to="/issues" className="text-sm font-semibold text-accent hover:text-accent-dark">
-                See all issues →
+              <Link to="/issues?kind=good-first" className="text-sm font-semibold text-accent hover:text-accent-dark">
+                See all matching issues →
               </Link>
             </div>
           </div>

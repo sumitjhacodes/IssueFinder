@@ -1,4 +1,4 @@
 export const TAGLINE =
-  'Find fresh open-source issues that match your skills — from first PR to regular contributions.'
+  'Filter by language, open a fresh issue, and land your next PR — without digging through stale GitHub noise.'
 
 export const PRODUCT_NAME = 'IssueFinder'

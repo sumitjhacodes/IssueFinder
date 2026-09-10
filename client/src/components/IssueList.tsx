@@ -1,323 +1,246 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { useFetchIssues } from '../hooks/useFetchIssues'
-import DifficultyBadge from './DifficultyBadge'
-import { detectDifficulty } from '../utils/difficulty'
-import type { NaturalLanguage } from '../utils/languageDetection'
-import { filterByLanguage } from '../utils/languageDetection'
-import { fetchRepositoryLanguages } from '../utils/repoLanguages'
-import { fetchRepositoryHealthBatch } from '../utils/repoHealth'
-import { calculateFreshness } from '../utils/issueFreshness'
-import FreshnessIndicator from './FreshnessIndicator'
-import { useSavedIssues } from '../hooks/useSavedIssues'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useFetchIssues, type GithubIssueItem } from '../hooks/useFetchIssues'
+import { MIN_REPO_STARS } from '../utils/queryBuilder'
 
 type IssueListProps = {
   className?: string
   query: string
-  naturalLanguageFilter?: NaturalLanguage[]
+  kindLabel?: string
+  languageLabel?: string | null
 }
 
-const IssueList: React.FC<IssueListProps> = ({ className = '', query, naturalLanguageFilter = [] }) => {
-  const [page, setPage] = useState<number>(1)
-  const perPage = 20
-  type IssueItem = {
-    id: number
-    html_url: string
-    title: string
-    state: 'open' | 'closed'
-    number: number
-    repository_url: string
-    labels: Array<{ name?: string; color?: string }>
-    created_at: string
-    updated_at?: string
-    comments?: number
+type RepoGroup = {
+  key: string
+  owner: string
+  name: string
+  htmlUrl: string
+  issues: GithubIssueItem[]
+}
+
+function parseRepo(repositoryUrl: string): { owner: string; name: string; key: string } {
+  const parts = repositoryUrl.replace('https://api.github.com/repos/', '').split('/')
+  const owner = parts[0] || ''
+  const name = parts[1] || ''
+  return { owner, name, key: `${owner}/${name}` }
+}
+
+function timeAgo(updated?: string, created?: string): string {
+  const raw = updated || created
+  if (!raw) return ''
+  const days = Math.floor((Date.now() - new Date(raw).getTime()) / 86400000)
+  if (days <= 0) return 'today'
+  if (days === 1) return 'yesterday'
+  if (days < 7) return `${days}d ago`
+  if (days < 30) return `${Math.floor(days / 7)}w ago`
+  return `${Math.floor(days / 30)}mo ago`
+}
+
+function groupByRepo(items: GithubIssueItem[]): RepoGroup[] {
+  const map = new Map<string, RepoGroup>()
+  for (const issue of items) {
+    const { owner, name, key } = parseRepo(issue.repository_url)
+    if (!key || key === '/') continue
+    let group = map.get(key)
+    if (!group) {
+      group = {
+        key,
+        owner,
+        name,
+        htmlUrl: `https://github.com/${owner}/${name}`,
+        issues: [],
+      }
+      map.set(key, group)
+    }
+    group.issues.push(issue)
   }
+  return Array.from(map.values()).sort((a, b) => b.issues.length - a.issues.length)
+}
 
-  const [items, setItems] = useState<IssueItem[]>([])
-  const [repoLanguages, setRepoLanguages] = useState<Record<string, string[]>>({})
-  const [repoHealth, setRepoHealth] = useState<Record<string, boolean>>({})
-  const [isCheckingHealth, setIsCheckingHealth] = useState<boolean>(false)
-  const languagesFetchedRef = useRef<Set<string>>(new Set())
-  const healthFetchedRef = useRef<Set<string>>(new Set())
-  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
+/**
+ * goodfirstissue.dev-style layout: repos first, issues nested underneath.
+ */
+const IssueList: React.FC<IssueListProps> = ({
+  className = '',
+  query,
+  kindLabel = 'Issues',
+  languageLabel,
+}) => {
+  const [page, setPage] = useState(1)
+  const [openRepos, setOpenRepos] = useState<Record<string, boolean>>({})
+  const perPage = 50
   const { data, isLoading, error } = useFetchIssues(query, page, perPage)
-
-  const displayError = error && !error.message.toLowerCase().includes('rate limit') ? error : null
-  const { saveIssue, removeIssue, isSaved } = useSavedIssues()
 
   useEffect(() => {
     setPage(1)
-    setItems([])
-    languagesFetchedRef.current = new Set()
-    healthFetchedRef.current = new Set()
-    setRepoLanguages({})
-    setRepoHealth({})
-    setIsCheckingHealth(false)
-    setIsInitialLoad(true)
+    setOpenRepos({})
   }, [query])
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      setIsInitialLoad(false)
-    }
-  }, [isLoading, data])
-
-  useEffect(() => {
-    if (data?.items) {
-      setItems(data.items)
-
-      const newRepos = data.items
-        .filter((item) => item.repository_url && !languagesFetchedRef.current.has(item.repository_url))
-        .map((item) => item.repository_url)
-
-      if (newRepos.length > 0) {
-        const uniqueRepos = Array.from(new Set(newRepos))
-        uniqueRepos.forEach((repoUrl, index) => {
-          setTimeout(async () => {
-            if (!languagesFetchedRef.current.has(repoUrl)) {
-              languagesFetchedRef.current.add(repoUrl)
-              try {
-                const languages = await fetchRepositoryLanguages(repoUrl)
-                if (languages.length > 0) {
-                  setRepoLanguages((prev) => ({ ...prev, [repoUrl]: languages }))
-                }
-              } catch {
-                /* ignore */
-              }
-            }
-          }, index * 200)
-        })
-      }
-
-      const reposNeedingHealth = data.items
-        .map((item) => item.repository_url)
-        .filter((url) => url && !healthFetchedRef.current.has(url))
-
-      if (reposNeedingHealth.length > 0) {
-        const uniqueHealthRepos = Array.from(new Set(reposNeedingHealth))
-        uniqueHealthRepos.forEach((url) => healthFetchedRef.current.add(url))
-        setIsCheckingHealth(true)
-        fetchRepositoryHealthBatch(uniqueHealthRepos)
-          .then((healthResults) => {
-            setRepoHealth((prev) => {
-              const next = { ...prev }
-              for (const [url, info] of Object.entries(healthResults)) {
-                next[url] = info.isHealthy
-              }
-              return next
-            })
-          })
-          .finally(() => setIsCheckingHealth(false))
-      } else if (data.items.length === 0) {
-        setIsCheckingHealth(false)
-      }
-    } else {
-      setItems([])
-    }
-  }, [data])
-
-  const filteredAndSortedItems = useMemo(() => {
-    let result = items
-
-    if (naturalLanguageFilter.length > 0) {
-      result = filterByLanguage(result, naturalLanguageFilter)
-    }
-
-    result = result.filter((issue) => {
-      const freshness = calculateFreshness(issue.updated_at, issue.created_at)
-      if (freshness.status === 'inactive') return false
-      if (repoHealth[issue.repository_url] === false) return false
-      return true
-    })
-
-    return [...result].sort((a, b) => {
-      const dateA = new Date(a.updated_at || a.created_at).getTime()
-      const dateB = new Date(b.updated_at || b.created_at).getTime()
-      return dateB - dateA
-    })
-  }, [items, naturalLanguageFilter, repoHealth])
-
+  const items = data?.items ?? []
+  const groups = useMemo(() => groupByRepo(items), [items])
   const totalCount = data?.total_count ?? 0
-  const githubMaxResults = 1000
-  const maxAllowedPages = Math.floor(githubMaxResults / perPage)
-  const actualTotalPages = Math.max(1, Math.ceil(totalCount / perPage))
-  const totalPages = Math.min(actualTotalPages, maxAllowedPages)
-  const hasPrevPage = page > 1
-  const hasNextPage = page < totalPages
-  const displayItems = filteredAndSortedItems
-  const isVerifying = isCheckingHealth && items.length > 0
+  const totalPages = Math.min(Math.max(1, Math.ceil(totalCount / perPage)), 20)
+  const showSkeleton = isLoading && items.length === 0
+  const displayError = error && !error.message.toLowerCase().includes('rate limit') ? error : null
+  const rateLimitMsg = error?.message.toLowerCase().includes('rate limit') ? error.message : null
 
   useEffect(() => {
-    if (page > totalPages && totalPages > 0) {
-      setPage(totalPages)
-    }
-  }, [page, totalPages])
+    if (groups.length === 0) return
+    setOpenRepos((prev) => {
+      const next: Record<string, boolean> = { ...prev }
+      groups.forEach((g, i) => {
+        if (next[g.key] === undefined) next[g.key] = i < 5
+      })
+      return next
+    })
+  }, [groups])
 
-  const formatRelative = (dateString: string) => {
-    const date = new Date(dateString)
-    const diffDays = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))
-    if (diffDays === 0) return 'today'
-    if (diffDays === 1) return 'yesterday'
-    if (diffDays < 7) return `${diffDays}d ago`
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`
-    return `${Math.floor(diffDays / 30)}mo ago`
-  }
+  const scopeBits = [
+    languageLabel && languageLabel !== 'All' ? languageLabel : null,
+    `★${MIN_REPO_STARS}+`,
+    'popular repos',
+  ].filter(Boolean)
 
   return (
     <section className={className}>
-      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-paper-line pb-4 dark:border-zinc-800">
         <div>
-          <h2 className="font-display text-2xl font-medium text-ink dark:text-white">Fresh issues</h2>
-          <p className="mt-1 text-sm text-ink-muted">Updated in the last 7 days · maintained repos</p>
+          <h2 className="font-display text-xl font-medium text-ink dark:text-white">
+            {kindLabel}
+            {languageLabel && languageLabel !== 'All' ? (
+              <span className="text-ink-muted"> · {languageLabel}</span>
+            ) : null}
+          </h2>
+          <p className="mt-0.5 text-sm text-ink-muted">{scopeBits.join(' · ')}</p>
         </div>
-        <p className="text-sm text-ink-muted">
-          {isLoading && displayItems.length === 0
+        <p className="tabular-nums text-sm text-ink-muted" aria-live="polite">
+          {showSkeleton || (isLoading && !data)
             ? 'Loading…'
-            : displayError
-              ? displayError.message
-              : `${totalCount.toLocaleString()} matching on GitHub`}
+            : rateLimitMsg
+              ? rateLimitMsg
+              : displayError
+                ? displayError.message
+                : `${totalCount.toLocaleString()} issues · ${groups.length} repos`}
         </p>
       </div>
 
-      {isVerifying && (
-        <p className="mb-4 text-sm text-ink-muted">Checking repository health…</p>
-      )}
-
-      {(isLoading || isInitialLoad) && displayItems.length === 0 && (
-        <div className="divide-y divide-paper-line overflow-hidden rounded-lg border border-paper-line bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-          {Array.from({ length: 8 }).map((_, idx) => (
-            <div key={idx} className="animate-pulse px-4 py-5 sm:px-5">
-              <div className="h-3 w-1/3 rounded bg-zinc-200 dark:bg-zinc-700" />
-              <div className="mt-3 h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-700" />
-              <div className="mt-2 h-3 w-1/2 rounded bg-zinc-100 dark:bg-zinc-800" />
-            </div>
+      {showSkeleton && (
+        <ul className="space-y-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <li key={i} className="animate-pulse rounded-lg border border-paper-line p-4 dark:border-zinc-800">
+              <div className="h-4 w-48 rounded bg-zinc-200 dark:bg-zinc-800" />
+              <div className="mt-3 h-3 w-full rounded bg-zinc-100 dark:bg-zinc-800" />
+              <div className="mt-2 h-3 w-2/3 rounded bg-zinc-100 dark:bg-zinc-800" />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
-      {displayItems.length === 0 && !isLoading && !displayError && !isInitialLoad && !isVerifying && (
-        <div className="rounded-lg border border-dashed border-paper-line px-6 py-14 text-center dark:border-zinc-700">
-          <h3 className="font-display text-xl font-medium text-ink dark:text-white">No matching issues</h3>
-          <p className="mx-auto mt-2 max-w-sm text-sm text-ink-muted">
-            Try fewer filters, or browse beginner-friendly issues.
-          </p>
-          <div className="mt-6 flex justify-center gap-3">
-            <Link to="/issues" className="btn-secondary text-sm">
-              Clear filters
-            </Link>
-            <Link to="/categories" className="btn-primary text-sm">
-              Browse categories
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {displayItems.length === 0 && !isLoading && displayError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-6 py-10 text-center dark:border-red-900/50 dark:bg-red-950/30">
-          <h3 className="font-display text-lg font-medium text-red-900 dark:text-red-100">Unable to load issues</h3>
-          <p className="mt-2 text-sm text-red-700 dark:text-red-300">{displayError.message}</p>
-          <button type="button" onClick={() => window.location.reload()} className="btn-secondary mt-4">
+      {!showSkeleton && displayError && items.length === 0 && (
+        <div className="py-14 text-center">
+          <p className="text-ink dark:text-white">Couldn’t load issues</p>
+          <button type="button" className="btn-secondary mt-3" onClick={() => window.location.reload()}>
             Retry
           </button>
         </div>
       )}
 
-      {displayItems.length > 0 && (
-        <ul className="divide-y divide-paper-line overflow-hidden rounded-lg border border-paper-line bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-          {displayItems.map((issue) => {
-            const repo = issue.repository_url?.split('/').slice(-2).join('/')
-            const difficulty = detectDifficulty(issue.labels || [])
-            const primaryLanguage = repoLanguages[issue.repository_url]?.[0]
-            const freshness = calculateFreshness(issue.updated_at, issue.created_at)
-            const saved = isSaved(issue.id)
-            const topLabel = issue.labels?.find((l) => l.name)?.name
+      {!showSkeleton && !displayError && items.length === 0 && (
+        <p className="py-14 text-center text-sm text-ink-muted">
+          {rateLimitMsg || 'No issues found. Try another language or All issues.'}
+        </p>
+      )}
 
+      {groups.length > 0 && (
+        <ul className={`space-y-3 ${isLoading ? 'opacity-60' : ''}`}>
+          {groups.map((group) => {
+            const open = !!openRepos[group.key]
             return (
-              <li key={issue.id} className="group px-4 py-5 transition hover:bg-zinc-50/80 sm:px-5 dark:hover:bg-zinc-800/40">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                      <span className="font-semibold text-ink dark:text-zinc-100">{repo}</span>
-                      <span className="text-ink-muted">#{issue.number}</span>
-                      {topLabel && (
-                        <span className="text-ink-muted">· {topLabel}</span>
-                      )}
-                    </div>
-                    <a
-                      href={issue.html_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-1.5 block font-display text-lg font-medium leading-snug text-ink transition group-hover:text-accent dark:text-white dark:group-hover:text-teal-400"
-                    >
-                      {issue.title}
-                    </a>
-                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-muted">
-                      {primaryLanguage && <span>{primaryLanguage}</span>}
-                      <span>updated {formatRelative(issue.updated_at || issue.created_at)}</span>
-                      <span>{issue.comments ?? 0} comments</span>
-                      <FreshnessIndicator
-                        status={freshness.status}
-                        label={freshness.label}
-                        description={freshness.description}
-                      />
-                      <DifficultyBadge difficulty={difficulty} />
-                    </div>
+              <li
+                key={group.key}
+                className="overflow-hidden rounded-lg border border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenRepos((prev) => ({ ...prev, [group.key]: !open }))
+                  }
+                  className="flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-ink dark:text-white">
+                      <span className="text-ink-muted">{group.owner}</span>
+                      <span className="mx-1 text-ink-muted">/</span>
+                      {group.name}
+                    </p>
+                    <p className="mt-1 text-xs text-ink-muted">
+                      {group.issues.length} issue{group.issues.length === 1 ? '' : 's'} on this page
+                      {' · '}
+                      updated {timeAgo(group.issues[0]?.updated_at, group.issues[0]?.created_at)}
+                    </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      if (saved) removeIssue(issue.id)
-                      else {
-                        saveIssue({
-                          id: issue.id,
-                          html_url: issue.html_url,
-                          title: issue.title,
-                          repository_url: issue.repository_url,
-                          number: issue.number,
-                          created_at: issue.created_at,
-                        })
-                      }
-                    }}
-                    className="shrink-0 rounded-md p-2 text-ink-muted opacity-0 transition hover:bg-zinc-100 hover:text-ink group-hover:opacity-100 dark:hover:bg-zinc-800"
-                    aria-label={saved ? 'Remove from saved' : 'Save for later'}
-                    title={saved ? 'Saved' : 'Save'}
-                  >
-                    {saved ? (
-                      <svg className="h-4 w-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                      </svg>
-                    ) : (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
+                  <span className="shrink-0 rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-ink dark:bg-zinc-800 dark:text-zinc-200">
+                    {group.issues.length}
+                  </span>
+                </button>
+
+                {open && (
+                  <ul className="border-t border-paper-line dark:border-zinc-800">
+                    {group.issues.map((issue) => (
+                      <li key={issue.id} className="border-b border-paper-line last:border-0 dark:border-zinc-800">
+                        <a
+                          href={issue.html_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block px-4 py-3 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                        >
+                          <p className="text-[15px] leading-snug text-ink dark:text-zinc-100">
+                            {issue.title}
+                          </p>
+                          <p className="mt-1 text-xs text-ink-muted">
+                            #{issue.number} · {timeAgo(issue.updated_at, issue.created_at)}
+                            {typeof issue.comments === 'number' && issue.comments > 0
+                              ? ` · ${issue.comments} comments`
+                              : ''}
+                          </p>
+                        </a>
+                      </li>
+                    ))}
+                    <li className="px-4 py-2.5">
+                      <a
+                        href={`${group.htmlUrl}/issues?q=is%3Aopen+label%3A%22good+first+issue%22`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-medium text-accent hover:underline"
+                      >
+                        View repo on GitHub →
+                      </a>
+                    </li>
+                  </ul>
+                )}
               </li>
             )
           })}
         </ul>
       )}
 
-      {totalCount > 0 && displayItems.length > 0 && (
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
+      {items.length > 0 && totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-between border-t border-paper-line pt-5 dark:border-zinc-800">
           <button
             type="button"
+            className="btn-secondary disabled:opacity-40"
+            disabled={page <= 1 || isLoading}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={!hasPrevPage || isLoading}
-            className="btn-secondary disabled:cursor-not-allowed disabled:opacity-40"
           >
             Previous
           </button>
-          <p className="text-sm text-ink-muted">
-            Page {page} of {totalPages}
-          </p>
+          <span className="text-sm text-ink-muted">
+            {page} / {totalPages}
+          </span>
           <button
             type="button"
+            className="btn-secondary disabled:opacity-40"
+            disabled={page >= totalPages || isLoading}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={!hasNextPage || isLoading}
-            className="btn-secondary disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next
           </button>

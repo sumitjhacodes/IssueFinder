@@ -6,27 +6,27 @@ import { TAGLINE } from '../constants/brand'
 const steps = [
   {
     n: '01',
-    title: 'Filter by what you know',
-    detail: 'Language, difficulty, and category — so every issue fits your skills.',
+    title: 'Pick your stack',
+    detail: 'Filter by language and issue type — good first, help wanted, bugs, or everything open.',
   },
   {
     n: '02',
-    title: 'Only fresh, healthy projects',
-    detail: 'We hide stale tickets and abandoned repos. What you see still ships.',
+    title: 'Only fresh work',
+    detail: 'We surface issues updated recently and still unassigned — not tickets that sat for a year.',
   },
   {
     n: '03',
-    title: 'Open on GitHub and contribute',
-    detail: 'One click to the issue. Fork, fix, and land your PR with confidence.',
+    title: 'Open on GitHub and ship',
+    detail: 'One click to the issue. Contribute whether it’s your first PR or your fiftieth.',
   },
 ]
 
 const languages = [
-  { label: 'JavaScript', q: 'javascript' },
-  { label: 'TypeScript', q: 'typescript' },
   { label: 'Python', q: 'python' },
-  { label: 'Go', q: 'go' },
+  { label: 'TypeScript', q: 'typescript' },
+  { label: 'JavaScript', q: 'javascript' },
   { label: 'Rust', q: 'rust' },
+  { label: 'Go', q: 'go' },
   { label: 'Java', q: 'java' },
   { label: 'C++', q: 'cpp' },
   { label: 'Ruby', q: 'ruby' },
@@ -46,8 +46,8 @@ const HomePage: React.FC = () => {
                 GitHub is noisy. Your next PR shouldn’t be.
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-ink-muted">
-                Most “good first issues” are months old or sit in repos that barely merge. IssueFinder
-                surfaces work that’s recent, on maintained projects, and filtered to your stack.
+                GitHub search is noisy. IssueFinder shows open, unassigned issues that were updated
+                recently — so beginners and regular contributors both find real work faster.
               </p>
             </div>
           </div>

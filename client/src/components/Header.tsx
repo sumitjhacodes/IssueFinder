@@ -119,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
               }}
               onFocus={() => setShowSuggestions(true)}
               placeholder="Search issues…"
-              className="w-full border-none bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none dark:text-zinc-100"
+              className="w-full border-none bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-zinc-100"
               aria-label="Search issues"
             />
             {isDebouncing && (

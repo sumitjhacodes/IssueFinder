@@ -13,7 +13,7 @@ const DAILY_CACHE_DURATION = 24 * 60 * 60 * 1000
  */
 export const ISSUES_CACHE_DURATION = 45 * 60 * 1000
 
-const STORAGE_PREFIX = 'ih_issues_cache_v1:'
+const STORAGE_PREFIX = 'ih_issues_cache_v2:'
 const MAX_PERSISTED_ENTRIES = 40
 
 const cache = new Map<string, CacheEntry<unknown>>()

@@ -1,144 +1,134 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import FiltersPanel from '../components/FiltersPanel'
 import IssueList from '../components/IssueList'
-import MobileCategoryTabs from '../components/MobileCategoryTabs'
+import { buildGitHubQuery, type IssueKind } from '../utils/queryBuilder'
 import { useSearch } from '../contexts/SearchContext'
-import type { NaturalLanguage } from '../utils/languageDetection'
-import { getBrowserLanguage } from '../utils/languageDetection'
-import { buildGitHubQuery } from '../utils/queryBuilder'
-import { TAGLINE } from '../constants/brand'
+
+const LANGUAGES = [
+  { key: null, label: 'All' },
+  { key: 'python', label: 'Python' },
+  { key: 'typescript', label: 'TypeScript' },
+  { key: 'javascript', label: 'JavaScript' },
+  { key: 'rust', label: 'Rust' },
+  { key: 'go', label: 'Go' },
+  { key: 'java', label: 'Java' },
+  { key: 'cpp', label: 'C++' },
+  { key: 'c', label: 'C' },
+  { key: 'csharp', label: 'C#' },
+  { key: 'php', label: 'PHP' },
+  { key: 'ruby', label: 'Ruby' },
+  { key: 'swift', label: 'Swift' },
+  { key: 'kotlin', label: 'Kotlin' },
+] as const
+
+const KINDS: { key: IssueKind; label: string }[] = [
+  { key: 'good-first', label: 'Good first' },
+  { key: 'help-wanted', label: 'Help wanted' },
+  { key: 'all', label: 'All issues' },
+  { key: 'bug', label: 'Bugs' },
+  { key: 'documentation', label: 'Docs' },
+]
+
+function kindFromParam(raw: string | null): IssueKind {
+  if (
+    raw === 'all' ||
+    raw === 'help-wanted' ||
+    raw === 'bug' ||
+    raw === 'documentation' ||
+    raw === 'good-first'
+  ) {
+    return raw
+  }
+  // Default like goodfirstissue.dev
+  return 'good-first'
+}
 
 const IssuesPage: React.FC = () => {
   const { submittedSearch } = useSearch()
-  const [searchParams] = useSearchParams()
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null)
-  const [selectedNaturalLanguages, setSelectedNaturalLanguages] = useState<NaturalLanguage[]>([])
-  const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false)
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null)
-  const [selectedType, setSelectedType] = useState<string | null>(null)
-  const [selectedFramework, setSelectedFramework] = useState<string | null>(null)
-  const [selectedLastActivity, setSelectedLastActivity] = useState<string | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const language = searchParams.get('language')
+  const kind = kindFromParam(searchParams.get('kind'))
 
-  useEffect(() => {
-    setSelectedNaturalLanguages([getBrowserLanguage()])
-  }, [])
+  const sync = useCallback(
+    (next: { language?: string | null; kind?: IssueKind }) => {
+      const params = new URLSearchParams()
+      const lang = next.language !== undefined ? next.language : language
+      const k = next.kind !== undefined ? next.kind : kind
 
-  useEffect(() => {
-    const categoryParam = searchParams.get('category')
-    const difficultyParam = searchParams.get('difficulty')
-    const languageParam = searchParams.get('language')
+      if (lang) params.set('language', lang)
+      // Persist kind when not the GFI default so links stay shareable
+      if (k && k !== 'good-first') params.set('kind', k)
 
-    if (categoryParam) setSelectedCategories([categoryParam])
-    if (difficultyParam) setSelectedDifficulty(difficultyParam)
-    if (languageParam) setSelectedLanguage(languageParam)
-  }, [searchParams])
+      setSearchParams(params, { replace: true })
+    },
+    [language, kind, setSearchParams]
+  )
 
-  const toggleLabel = (label: string) => {
-    setSelectedLabels((prev) => (prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]))
-  }
+  const query = useMemo(
+    () =>
+      buildGitHubQuery({
+        searchTerm: submittedSearch || undefined,
+        selectedLanguage: language,
+        selectedKind: kind,
+        // No date filter by default — same as GFI curated popular repos
+        selectedLastActivity: kind === 'all' ? 'last-month' : 'any',
+      }),
+    [submittedSearch, language, kind]
+  )
 
-  const toggleCategory = (category: string) => {
-    setSelectedCategories((prev) => {
-      if (category === 'all') return prev.includes('all') ? [] : ['all']
-      if (prev.includes(category)) return prev.filter((c) => c !== category)
-      return [...prev.filter((c) => c !== 'all'), category]
-    })
-  }
-
-  const query = useMemo(() => {
-    return buildGitHubQuery({
-      searchTerm: submittedSearch || undefined,
-      selectedLabels,
-      selectedCategories,
-      selectedLanguage,
-      selectedDifficulty,
-      selectedType,
-      selectedFramework,
-      selectedLastActivity,
-    })
-  }, [
-    submittedSearch,
-    selectedLabels,
-    selectedCategories,
-    selectedLanguage,
-    selectedDifficulty,
-    selectedType,
-    selectedFramework,
-    selectedLastActivity,
-  ])
+  const kindLabel = KINDS.find((k) => k.key === kind)?.label ?? 'Good first'
+  const languageLabel = LANGUAGES.find((l) => l.key === language)?.label ?? 'All'
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-      <header className="mb-8 max-w-2xl">
-        <h1 className="font-display text-3xl font-medium tracking-tight text-ink dark:text-white sm:text-4xl">
-          Browse issues
-        </h1>
-        <p className="mt-2 text-base text-ink-muted">{TAGLINE}</p>
+    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+      <header className="mb-7">
+        <h1 className="font-display text-3xl font-medium text-ink dark:text-white">Issues</h1>
+        <p className="mt-1 text-sm text-ink-muted">
+          Browse by language — popular repos (100+ stars), grouped like goodfirstissue.dev.
+        </p>
       </header>
 
-      <MobileCategoryTabs selectedCategories={selectedCategories} onToggleCategory={toggleCategory} />
-
-      <div className="mb-4 md:hidden">
-        <button
-          type="button"
-          className="btn-secondary"
-          onClick={() => setShowMobileFilters((v) => !v)}
-        >
-          {showMobileFilters ? 'Hide filters' : 'Filters'}
-        </button>
+      <div className="mb-3 flex flex-wrap gap-2">
+        {KINDS.map((k) => {
+          const active = kind === k.key
+          return (
+            <button
+              key={k.key}
+              type="button"
+              onClick={() => sync({ kind: k.key })}
+              className={`rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
+                active
+                  ? 'border-ink bg-ink text-white dark:border-white dark:bg-white dark:text-zinc-900'
+                  : 'border-paper-line text-ink-muted hover:border-zinc-300 hover:text-ink dark:border-zinc-700 dark:hover:border-zinc-500'
+              }`}
+            >
+              {k.label}
+            </button>
+          )
+        })}
       </div>
 
-      {showMobileFilters && (
-        <div className="mb-6 md:hidden">
-          <FiltersPanel
-            className="rounded-lg"
-            selectedLabels={selectedLabels}
-            onToggleLabel={toggleLabel}
-            selectedLanguage={selectedLanguage}
-            onChangeLanguage={setSelectedLanguage}
-            showTags={true}
-            selectedCategories={selectedCategories}
-            onToggleCategory={toggleCategory}
-            isMobile={true}
-            selectedDifficulty={selectedDifficulty}
-            onChangeDifficulty={setSelectedDifficulty}
-            selectedType={selectedType}
-            onChangeType={setSelectedType}
-            selectedFramework={selectedFramework}
-            onChangeFramework={setSelectedFramework}
-            selectedLastActivity={selectedLastActivity}
-            onChangeLastActivity={setSelectedLastActivity}
-          />
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
-        <aside className="hidden md:col-span-3 md:block">
-          <FiltersPanel
-            className="sticky top-20 rounded-lg"
-            selectedLabels={selectedLabels}
-            onToggleLabel={toggleLabel}
-            selectedLanguage={selectedLanguage}
-            onChangeLanguage={setSelectedLanguage}
-            selectedCategories={selectedCategories}
-            onToggleCategory={toggleCategory}
-            selectedDifficulty={selectedDifficulty}
-            onChangeDifficulty={setSelectedDifficulty}
-            selectedType={selectedType}
-            onChangeType={setSelectedType}
-            selectedFramework={selectedFramework}
-            onChangeFramework={setSelectedFramework}
-            selectedLastActivity={selectedLastActivity}
-            onChangeLastActivity={setSelectedLastActivity}
-          />
-        </aside>
-        <div className="md:col-span-9">
-          <IssueList query={query} naturalLanguageFilter={selectedNaturalLanguages} />
-        </div>
+      <div className="mb-8 flex flex-wrap gap-1.5">
+        {LANGUAGES.map((lang) => {
+          const active = language === lang.key || (!language && lang.key === null)
+          return (
+            <button
+              key={lang.label}
+              type="button"
+              onClick={() => sync({ language: lang.key })}
+              className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+                active
+                  ? 'bg-zinc-200 text-ink dark:bg-zinc-700 dark:text-white'
+                  : 'text-ink-muted hover:bg-zinc-100 dark:hover:bg-zinc-900'
+              }`}
+            >
+              {lang.label}
+            </button>
+          )
+        })}
       </div>
+
+      <IssueList key={query} query={query} kindLabel={kindLabel} languageLabel={languageLabel} />
     </main>
   )
 }

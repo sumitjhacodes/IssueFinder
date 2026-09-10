@@ -76,7 +76,7 @@ function resolveLabel(params: QueryBuilderParams): string | null {
   if (params.selectedType) return params.selectedType
   if (params.selectedLabels?.length) return params.selectedLabels[0]
 
-  // Match goodfirstissue.dev default surface
+  // Default: beginner-friendly labeled issues
   return 'good first issue'
 }
 
@@ -107,8 +107,7 @@ export function toGitHubLanguageQualifier(slugOrName: string): string {
 }
 
 /**
- * goodfirstissue.dev-style search:
- * open issues on popular repos, optional label + language.
+ * Open issues on popular repos, with optional label + language.
  * Avoid stacking filters that zero out results.
  */
 export function buildGitHubQuery(params: QueryBuilderParams): string {

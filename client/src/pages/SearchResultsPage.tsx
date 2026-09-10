@@ -33,7 +33,7 @@ const SearchResultsPage: React.FC = () => {
             </p>
           )}
         </div>
-        <Link to="/issues" className="btn-secondary text-sm">
+        <Link to="/issues" className="btn-secondary">
           Browse
         </Link>
       </div>

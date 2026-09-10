@@ -121,10 +121,10 @@ const HomePage: React.FC = () => {
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-lg text-ink-muted">{TAGLINE}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link to="/issues" className="btn-primary px-7 py-3 text-base">
+              <Link to="/issues" className="btn-primary px-7 py-3">
                 Browse fresh issues
               </Link>
-              <Link to="/categories" className="btn-secondary px-7 py-3 text-base">
+              <Link to="/categories" className="btn-secondary px-7 py-3">
                 Explore categories
               </Link>
             </div>

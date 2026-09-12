@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#FAFAF9"/>
+  <circle cx="980" cy="90" r="200" fill="#FFE8E4" opacity="0.5"/>
+  <circle cx="140" cy="540" r="180" fill="#D1FAE5" opacity="0.4"/>
+
+  <!-- Soft icon tile -->
+  <rect x="120" y="195" width="240" height="240" rx="48" fill="#FFFFFF" stroke="#E5E5E5"/>
+  <g transform="translate(160 235) scale(2.5)">
+    <circle cx="28" cy="28" r="14" stroke="#0F766E" stroke-width="6" fill="none"/>
+    <path d="M38.5 38.5L50 50" stroke="#0F766E" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="28" cy="28" r="5" fill="#E4572E"/>
+  </g>
+
+  <text x="420" y="300" fill="#0A0A0A" font-family="Georgia, 'Times New Roman', serif" font-size="72">IssueFinder</text>
+  <text x="420" y="360" fill="#525252" font-family="Arial, Helvetica, sans-serif" font-size="28">Find fresh issues. Land your next PR.</text>
+  <text x="420" y="420" fill="#A3A3A3" font-family="Arial, Helvetica, sans-serif" font-size="22">issuefinder.fun</text>
+</svg>

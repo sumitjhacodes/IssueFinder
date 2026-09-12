@@ -4,10 +4,10 @@ import BountyIssues from '../components/BountyIssues'
 
 const BountyIssuesPage: React.FC = () => {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+    <main className="page-shell max-w-3xl py-10 sm:py-14">
       <header className="mb-8">
-        <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">Bounties</p>
-        <h1 className="mt-3 font-display text-3xl font-medium text-ink dark:text-white sm:text-4xl">
+        <p className="font-sans text-sm font-medium uppercase tracking-[0.18em] text-ink-muted">Bounties</p>
+        <h1 className="mt-3 font-display text-4xl text-ink dark:text-white sm:text-5xl">
           Get paid to solve issues
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted sm:text-base">

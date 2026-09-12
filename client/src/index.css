@@ -50,9 +50,8 @@
   :root {
     --bg-primary: #fafafa;
     --bg-secondary: #ffffff;
-    /* lab(27.036 0 0) — body ink */
-    --text-primary: #2e2e2e;
-    --text-primary-lab: lab(27.036% 0 0);
+    /* Geist body ink — exact */
+    --text-primary: lab(27.036 0 0);
     --text-secondary: #525252;
     --border-color: #e5e5e5;
     --accent-color: #0f766e;
@@ -68,7 +67,6 @@
     --bg-primary: #0a0a0a;
     --bg-secondary: #171717;
     --text-primary: #fafafa;
-    --text-primary-lab: #fafafa;
     --text-secondary: #a3a3a3;
     --border-color: #262626;
     --accent-color: #2dd4bf;
@@ -83,7 +81,6 @@
     line-height: 24px;
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    color: var(--text-primary-lab);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -123,11 +120,94 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-lg bg-ink px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-white transition hover:bg-zinc-800 dark:bg-white dark:text-ink dark:hover:bg-zinc-200;
+    @apply inline-flex h-12 items-center justify-center rounded-md bg-[#0a0a0a] px-6 font-sans text-sm font-medium tracking-tight text-white transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/30 dark:bg-white dark:text-[#0a0a0a] dark:hover:bg-zinc-200 dark:focus-visible:ring-white/40;
   }
 
+  /* Outline button with left→right traveling coral ↔ teal border */
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-lg border border-paper-line bg-white px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-ink transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500 dark:hover:bg-zinc-800;
+    @apply relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md border-0 bg-transparent px-6 font-sans text-sm font-medium tracking-tight text-[#0a0a0a] transition-colors dark:text-white;
+    isolation: isolate;
+  }
+
+  .btn-secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      #e4572e,
+      #0f766e,
+      #f5a899,
+      #14b8a6,
+      #e4572e
+    );
+    background-size: 300% 100%;
+    animation: btn-outline-ltr 2.4s linear infinite;
+  }
+
+  .btn-secondary::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    z-index: -1;
+    border-radius: 5px;
+    background: var(--bg-primary);
+  }
+
+  .btn-secondary:hover::after {
+    background: var(--bg-secondary);
+  }
+
+  /* Buy me a coffee — same LTR outline, warm coffee pattern */
+  .btn-coffee {
+    @apply relative inline-flex h-12 shrink-0 items-center justify-center overflow-hidden rounded-md border-0 bg-transparent px-6 font-sans text-sm font-medium tracking-tight text-[#0a0a0a] transition-colors dark:text-white;
+    isolation: isolate;
+  }
+
+  .btn-coffee::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      #6f4e37,
+      #c47a3a,
+      #f0c27a,
+      #d4a574,
+      #8b5e3c,
+      #6f4e37
+    );
+    background-size: 300% 100%;
+    animation: btn-outline-ltr 2.4s linear infinite;
+  }
+
+  .btn-coffee::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    z-index: -1;
+    border-radius: 5px;
+    background: var(--bg-secondary);
+  }
+
+  .btn-coffee:hover::after {
+    background: #fff8f0;
+  }
+
+  html.dark .btn-coffee:hover::after {
+    background: #1c1917;
+  }
+
+  .btn-coffee-sm {
+    @apply h-auto rounded-md px-2.5 py-1 text-[13px];
+  }
+
+  .btn-coffee-sm::after {
+    border-radius: 4px;
   }
 
   .surface {
@@ -139,6 +219,15 @@
   }
 }
 
+@keyframes btn-outline-ltr {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -146,6 +235,18 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .btn-secondary::before {
+    animation: none;
+    background: linear-gradient(90deg, #e4572e, #0f766e);
+    background-size: 100% 100%;
+  }
+
+  .btn-coffee::before {
+    animation: none;
+    background: linear-gradient(90deg, #6f4e37, #c47a3a, #f0c27a);
+    background-size: 100% 100%;
   }
 }
 

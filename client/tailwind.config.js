@@ -13,7 +13,7 @@ export default {
       },
       colors: {
         ink: {
-          DEFAULT: '#2e2e2e',
+          DEFAULT: 'lab(27.036 0 0)',
           soft: '#404040',
           muted: '#737373',
         },

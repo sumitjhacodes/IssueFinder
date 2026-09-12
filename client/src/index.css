@@ -2,14 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Geist — body UI type (400 / 16px / 24px) */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/files/geist-sans-latin-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/files/geist-sans-latin-500-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/files/geist-sans-latin-600-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/files/geist-sans-latin-700-normal.woff2')
+    format('woff2');
+}
+
+/* Metric-matched fallback while Geist loads */
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Arial');
+  ascent-override: 95%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  size-adjust: 105%;
+}
+
 @layer base {
   :root {
     --bg-primary: #fafafa;
     --bg-secondary: #ffffff;
-    --text-primary: #141414;
-    --text-secondary: #52525b;
-    --border-color: #e4e4e7;
-    --accent-color: #0d9488;
+    /* lab(27.036 0 0) — body ink */
+    --text-primary: #2e2e2e;
+    --text-primary-lab: lab(27.036% 0 0);
+    --text-secondary: #525252;
+    --border-color: #e5e5e5;
+    --accent-color: #0f766e;
   }
 
   html {
@@ -19,20 +65,27 @@
   }
 
   html.dark {
-    --bg-primary: #09090b;
-    --bg-secondary: #18181b;
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #171717;
     --text-primary: #fafafa;
-    --text-secondary: #a1a1aa;
-    --border-color: #27272a;
+    --text-primary-lab: #fafafa;
+    --text-secondary: #a3a3a3;
+    --border-color: #262626;
     --accent-color: #2dd4bf;
     color-scheme: dark;
   }
 
   body {
-    @apply text-base leading-relaxed antialiased;
-    font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    font-family: Geist, 'Geist Fallback', ui-sans-serif, system-ui, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    color: var(--text-primary-lab);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -41,46 +94,48 @@
   h4,
   h5,
   h6 {
-    font-family: Newsreader, Georgia, ui-serif, serif;
-    font-weight: 500;
-    letter-spacing: -0.025em;
+    font-family: "Instrument Serif", Georgia, ui-serif, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
     text-wrap: balance;
-    color: var(--text-primary);
+    color: #0a0a0a;
   }
 
-  a {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-    --tw-ring-color: var(--accent-color);
+  html.dark h1,
+  html.dark h2,
+  html.dark h3,
+  html.dark h4,
+  html.dark h5,
+  html.dark h6 {
+    color: #fafafa;
   }
 
-  a:focus-visible {
+  /* opensourceui-style focus: border shift, not colored glow rings */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
     outline: none;
-  }
-
-  button {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-    --tw-ring-color: var(--accent-color);
-  }
-
-  input,
-  textarea,
-  select {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-    --tw-ring-color: var(--accent-color);
+    box-shadow: 0 0 0 1px var(--border-color);
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-ink px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-white transition hover:bg-zinc-800 dark:bg-white dark:text-ink dark:hover:bg-zinc-200;
+    @apply inline-flex items-center justify-center rounded-lg bg-ink px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-white transition hover:bg-zinc-800 dark:bg-white dark:text-ink dark:hover:bg-zinc-200;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-md border border-paper-line bg-white px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-ink transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800;
+    @apply inline-flex items-center justify-center rounded-lg border border-paper-line bg-white px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-ink transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-500 dark:hover:bg-zinc-800;
   }
 
   .surface {
-    @apply border border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-900;
+    @apply rounded-2xl border border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-900;
+  }
+
+  .page-shell {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
 }
 
@@ -131,7 +186,6 @@
   animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Smooth theme switching — enabled only while toggling (fallback) */
 html.theme-transitioning,
 html.theme-transitioning *,
 html.theme-transitioning *::before,
@@ -147,7 +201,6 @@ html.theme-transitioning *::after {
   transition-delay: 0s !important;
 }
 
-/* Circular reveal — continuous motion, no default crossfade stall */
 @supports (view-transition-name: root) {
   ::view-transition-group(root) {
     animation-duration: 0.5s;
@@ -176,7 +229,6 @@ html.theme-transitioning *::after {
 
   html[data-theme-vt='active']::view-transition-new(root) {
     z-index: 9999;
-    /* Start slightly open so the first frame already moves — no “frozen” beat */
     animation: theme-vt-reveal 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 }
@@ -207,4 +259,3 @@ html.theme-transitioning *::after {
     animation: none !important;
   }
 }
-

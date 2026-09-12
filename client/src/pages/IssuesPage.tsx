@@ -80,9 +80,9 @@ const IssuesPage: React.FC = () => {
   const languageLabel = LANGUAGES.find((l) => l.key === language)?.label ?? 'All'
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
-      <header className="mb-7">
-        <h1 className="font-display text-3xl font-medium text-ink dark:text-white">Issues</h1>
+    <main className="page-shell max-w-3xl py-10 sm:py-14">
+      <header className="mb-8">
+        <h1 className="font-display text-4xl text-ink dark:text-white">Issues</h1>
         <p className="mt-1 text-sm text-ink-muted">
           Browse by language — open issues on popular repos with 100+ stars.
         </p>

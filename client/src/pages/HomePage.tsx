@@ -108,11 +108,11 @@ const HomePage: React.FC = () => {
               Ready when you are.
             </h2>
             <p className="mx-auto mt-5 max-w-lg font-sans text-lg text-ink-muted">{TAGLINE}</p>
-            <div className="mx-auto mt-9 flex w-full max-w-sm flex-col gap-2.5 sm:max-w-none sm:flex-row sm:justify-center">
-              <Link to="/issues" className="btn-primary px-7 py-3.5">
+            <div className="mx-auto mt-9 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+              <Link to="/issues" className="btn-primary">
                 Browse fresh issues
               </Link>
-              <Link to="/categories" className="btn-secondary px-7 py-3.5">
+              <Link to="/categories" className="btn-secondary">
                 Explore categories
               </Link>
             </div>
@@ -122,7 +122,7 @@ const HomePage: React.FC = () => {
                 href={BUY_ME_A_COFFEE_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center rounded-lg border border-accent/35 bg-accent/10 px-2.5 py-0.5 font-medium text-ink transition hover:border-accent hover:bg-accent/15 dark:border-accent/50 dark:bg-accent/10 dark:text-white dark:hover:bg-accent/20"
+                className="btn-coffee btn-coffee-sm align-middle"
               >
                 Buy me a coffee
               </a>{' '}

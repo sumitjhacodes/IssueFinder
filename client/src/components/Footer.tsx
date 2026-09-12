@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { PRODUCT_NAME, TAGLINE, BUY_ME_A_COFFEE_URL } from '../constants/brand'
+import { PRODUCT_NAME, TAGLINE, BUY_ME_A_COFFEE_URL, GITHUB_NEW_ISSUE_URL, GITHUB_REPO_URL } from '../constants/brand'
 
 type FooterProps = {
   githubUrl?: string
@@ -45,6 +45,22 @@ const Footer: React.FC<FooterProps> = ({
             <Link to="/beginner-guide" className="hover:text-ink dark:hover:text-white">
               Guide
             </Link>
+            <a
+              href={GITHUB_NEW_ISSUE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink dark:hover:text-white"
+            >
+              Report a bug
+            </a>
+            <a
+              href={GITHUB_REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink dark:hover:text-white"
+            >
+              Contribute
+            </a>
           </nav>
 
           <div className="flex items-center gap-3 text-ink-muted">
@@ -97,7 +113,7 @@ const Footer: React.FC<FooterProps> = ({
             href={BUY_ME_A_COFFEE_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex shrink-0 items-center justify-center self-start rounded-md border border-accent/40 bg-accent/10 px-5 py-2.5 font-sans text-[15px] font-medium tracking-tight text-ink transition hover:border-accent hover:bg-accent/15 dark:border-accent/50 dark:bg-accent/10 dark:text-white dark:hover:bg-accent/20 sm:self-auto"
+            className="btn-coffee self-start sm:self-auto"
           >
             Buy me a coffee
           </a>

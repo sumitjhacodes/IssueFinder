@@ -13,7 +13,7 @@ type HeaderProps = {
 }
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `px-3 py-2 text-sm font-medium transition-colors ${
+  `px-3 py-2 font-sans text-sm font-medium tracking-tight transition-colors ${
     isActive
       ? 'text-ink dark:text-white'
       : 'text-ink-muted hover:text-ink dark:text-zinc-400 dark:hover:text-white'
@@ -82,12 +82,10 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
   ]
 
   return (
-    <header className="sticky top-0 z-50 border-b border-paper-line/80 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
-      <div className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-50 border-b border-paper-line bg-paper/90 font-sans backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
+      <div className="page-shell flex items-center gap-4 py-3">
         <Link to="/" className="flex shrink-0 items-center gap-2.5">
-          <span className="font-display text-lg font-semibold tracking-tight text-ink dark:text-white">
-            {title}
-          </span>
+          <span className="font-display text-xl tracking-tight text-ink dark:text-white">{title}</span>
         </Link>
 
         <nav className="hidden items-center md:flex">
@@ -100,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
 
         <div className="relative min-w-0 flex-1">
           <form
-            className="flex items-center gap-2 rounded-md border border-paper-line bg-paper px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="flex items-center gap-2 rounded-lg border border-paper-line bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
             onSubmit={(e) => {
               e.preventDefault()
               handleSearchSubmit()
@@ -119,22 +117,22 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
               }}
               onFocus={() => setShowSuggestions(true)}
               placeholder="Search issues…"
-              className="w-full border-none bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-zinc-100"
+              className="w-full border-none bg-transparent font-sans text-sm tracking-tight text-ink placeholder:text-ink-muted focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-zinc-100"
               aria-label="Search issues"
             />
             {isDebouncing && (
               <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-zinc-300 border-t-accent" />
             )}
-            <kbd className="hidden rounded border border-paper-line px-1.5 py-0.5 text-[10px] font-medium text-ink-muted sm:inline dark:border-zinc-700">
+            <kbd className="hidden rounded border border-paper-line px-1.5 py-0.5 font-sans text-[10px] font-medium tracking-tight text-ink-muted sm:inline dark:border-zinc-700">
               ⌘K
             </kbd>
           </form>
           {showSuggestions && filteredHistory.length > 0 && (
             <div
               ref={suggestionsRef}
-              className="absolute left-0 right-0 top-full z-50 mt-1.5 overflow-hidden rounded-md border border-paper-line bg-white shadow-soft dark:border-zinc-700 dark:bg-zinc-900"
+              className="absolute left-0 right-0 top-full z-50 mt-1.5 overflow-hidden rounded-lg border border-paper-line bg-white shadow-soft dark:border-zinc-700 dark:bg-zinc-900"
             >
-              <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-ink-muted">
+              <div className="px-3 py-2 font-sans text-[11px] font-medium uppercase tracking-wide text-ink-muted">
                 Recent
               </div>
               {filteredHistory.map((item, index) => (
@@ -145,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
                     onSearchTermChange(item)
                     handleSearchSubmit(item)
                   }}
-                  className="block w-full px-3 py-2 text-left text-sm text-ink hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                  className="block w-full px-3 py-2 text-left font-sans text-sm tracking-tight text-ink hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800"
                 >
                   {item}
                 </button>
@@ -159,7 +157,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
             href="https://github.com/sumitjhacodes/IssueFinder-Find-Beginner-Friendly-Issues"
             target="_blank"
             rel="noreferrer"
-            className="hidden items-center gap-1.5 rounded-md border border-paper-line bg-white px-2.5 py-1.5 text-sm font-medium text-ink-soft transition hover:border-zinc-300 hover:text-ink sm:inline-flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:text-white"
+            className="hidden items-center gap-1.5 rounded-lg border border-paper-line bg-white px-2.5 py-1.5 font-sans text-sm font-medium tracking-tight text-ink-soft transition hover:border-zinc-300 hover:text-ink sm:inline-flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:text-white"
             aria-label="Star us on GitHub"
           >
             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -218,7 +216,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
               target="_blank"
               rel="noreferrer"
               onClick={() => setShowMobileMenu(false)}
-              className="px-3 py-2 text-sm font-medium text-ink-muted hover:text-ink dark:text-zinc-400 dark:hover:text-white"
+              className="px-3 py-2 font-sans text-sm font-medium tracking-tight text-ink-muted hover:text-ink dark:text-zinc-400 dark:hover:text-white"
             >
               Star us on GitHub
             </a>

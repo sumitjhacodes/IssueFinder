@@ -67,54 +67,50 @@ const Hero: React.FC = () => {
   const isLive = live.length > 0
 
   return (
-    <section className="relative overflow-hidden">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_-10%,rgba(13,148,136,0.14),transparent_55%),linear-gradient(180deg,#fafafa_0%,#f4f4f5_100%)] dark:bg-[radial-gradient(ellipse_70%_55%_at_50%_-10%,rgba(45,212,191,0.12),transparent_55%),linear-gradient(180deg,#09090b_0%,#18181b_100%)]"
-        aria-hidden
-      />
-      <div className="relative mx-auto max-w-5xl px-4 pb-10 pt-16 sm:px-6 sm:pb-14 sm:pt-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="font-display text-2xl font-medium tracking-tight text-ink dark:text-white sm:text-3xl">
-            {PRODUCT_NAME}
-          </p>
-          <h1 className="mt-5 font-display text-4xl font-medium leading-[1.12] text-ink sm:text-5xl dark:text-white">
+    <section className="relative overflow-hidden border-b border-paper-line dark:border-zinc-800">
+      <div className="page-shell pb-14 pt-16 sm:pb-20 sm:pt-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="font-sans text-sm font-medium tracking-wide text-ink-muted">{PRODUCT_NAME}</p>
+          <h1 className="mt-5 font-display text-5xl leading-[1.08] text-ink dark:text-white sm:text-6xl">
             Stop hunting for issues.
-            <span className="block text-ink-muted dark:text-zinc-400">Start landing PRs.</span>
+            <span className="mt-1 block italic text-ink-muted dark:text-zinc-400">
+              Start landing PRs.
+            </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-ink-muted sm:text-xl dark:text-zinc-400">
+          <p className="mx-auto mt-6 max-w-lg font-sans text-base leading-relaxed text-ink-muted sm:text-lg">
             {TAGLINE}
           </p>
-          <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <Link to="/issues?kind=good-first" className="btn-primary px-8 py-3.5">
+          <div className="mx-auto mt-9 flex w-full max-w-md flex-row flex-wrap items-center justify-center gap-3">
+            <Link to="/issues?kind=good-first" className="btn-primary min-w-[10.5rem] flex-1 px-5 py-3.5 sm:flex-none">
               Find my next issue
             </Link>
-            <Link to="/bounty" className="btn-secondary px-8 py-3.5">
+            <Link to="/bounty" className="btn-secondary min-w-[10.5rem] flex-1 px-5 py-3.5 sm:flex-none">
               Browse paid bounties
             </Link>
           </div>
-          <p className="mt-4 text-sm text-ink-muted">
+          <p className="mt-5 font-sans text-sm text-ink-muted">
             New to open source?{' '}
             <Link
               to="/beginner-guide"
-              className="font-semibold text-ink underline-offset-4 hover:underline dark:text-zinc-200"
+              className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
             >
               Read the guide
             </Link>
           </p>
         </div>
 
-        <div className="mx-auto mt-14 max-w-3xl">
-          <div className="overflow-hidden rounded-xl border border-paper-line/80 bg-white/90 shadow-soft dark:border-zinc-700/80 dark:bg-zinc-900/90">
-            <div className="flex items-center justify-between border-b border-paper-line px-4 py-3 dark:border-zinc-800">
-              <span className="text-xs font-medium text-ink-muted">Live preview</span>
-              <span className="text-xs font-medium text-accent">
-                {isLive ? 'From GitHub' : isLoading ? 'Loading…' : 'Samples'}
+        <div className="mx-auto mt-16 max-w-3xl">
+          <div className="overflow-hidden rounded-2xl border border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="flex items-center justify-between border-b border-paper-line px-5 py-3.5 dark:border-zinc-800">
+              <span className="font-sans text-xs font-medium text-ink-muted">Live preview</span>
+              <span className="rounded-full border border-paper-line px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wide text-ink-muted dark:border-zinc-700">
+                {isLive ? 'From GitHub' : isLoading ? 'Loading' : 'Samples'}
               </span>
             </div>
             <ul className="divide-y divide-paper-line dark:divide-zinc-800">
               {isLoading && !isLive
                 ? Array.from({ length: PREVIEW_COUNT }).map((_, i) => (
-                    <li key={i} className="animate-pulse px-4 py-4">
+                    <li key={i} className="animate-pulse px-5 py-4">
                       <div className="h-3 w-28 rounded bg-zinc-200 dark:bg-zinc-700" />
                       <div className="mt-2 h-5 w-3/4 rounded bg-zinc-200 dark:bg-zinc-700" />
                     </li>
@@ -126,28 +122,30 @@ const Hero: React.FC = () => {
                           href={issue.html_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="block px-4 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
+                          className="block px-5 py-4 text-left transition hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                         >
-                          <p className="text-sm font-semibold text-ink dark:text-zinc-100">{issue.repo}</p>
-                          <p className="mt-1 font-display text-lg font-medium text-ink dark:text-white">
-                            {issue.title}
-                          </p>
-                          <p className="mt-1.5 text-xs text-ink-muted">{issue.meta}</p>
+                          <p className="font-sans text-sm font-medium text-ink-muted">{issue.repo}</p>
+                          <p className="mt-1 font-display text-xl text-ink dark:text-white">{issue.title}</p>
+                          <p className="mt-1.5 font-sans text-xs text-ink-muted">{issue.meta}</p>
                         </a>
                       ) : (
-                        <Link to={issue.html_url} className="block px-4 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/60">
-                          <p className="text-sm font-semibold text-ink dark:text-zinc-100">{issue.repo}</p>
-                          <p className="mt-1 font-display text-lg font-medium text-ink dark:text-white">
-                            {issue.title}
-                          </p>
-                          <p className="mt-1.5 text-xs text-ink-muted">{issue.meta}</p>
+                        <Link
+                          to={issue.html_url}
+                          className="block px-5 py-4 text-left transition hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                        >
+                          <p className="font-sans text-sm font-medium text-ink-muted">{issue.repo}</p>
+                          <p className="mt-1 font-display text-xl text-ink dark:text-white">{issue.title}</p>
+                          <p className="mt-1.5 font-sans text-xs text-ink-muted">{issue.meta}</p>
                         </Link>
                       )}
                     </li>
                   ))}
             </ul>
-            <div className="border-t border-paper-line bg-zinc-50/80 px-4 py-3 text-center dark:border-zinc-800 dark:bg-zinc-950/50">
-              <Link to="/issues?kind=good-first" className="text-sm font-semibold text-accent hover:text-accent-dark">
+            <div className="border-t border-paper-line px-5 py-3.5 text-center dark:border-zinc-800">
+              <Link
+                to="/issues?kind=good-first"
+                className="font-sans text-sm font-medium text-ink underline-offset-4 hover:underline dark:text-zinc-200"
+              >
                 See all matching issues →
               </Link>
             </div>

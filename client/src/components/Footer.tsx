@@ -15,21 +15,21 @@ const Footer: React.FC<FooterProps> = ({
 }) => {
   return (
     <footer className="mt-auto border-t border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-950">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <div className="page-shell py-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-sm space-y-2">
             <div className="flex items-center gap-2">
-              <span className="font-display text-base font-semibold text-ink dark:text-white">
+              <span className="font-display text-xl text-ink dark:text-white">
                 {PRODUCT_NAME}
               </span>
             </div>
-            <p className="text-sm leading-relaxed text-ink-muted">{TAGLINE}</p>
-            <p className="text-xs text-ink-muted/80">
+            <p className="font-sans text-sm leading-relaxed text-ink-muted">{TAGLINE}</p>
+            <p className="font-sans text-xs text-ink-muted/80">
               © {new Date().getFullYear()} {PRODUCT_NAME}
             </p>
           </div>
 
-          <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft dark:text-zinc-300">
+          <nav className="flex flex-wrap gap-x-5 gap-y-2 font-sans text-sm text-ink-soft dark:text-zinc-300">
             <Link to="/issues" className="hover:text-ink dark:hover:text-white">
               Issues
             </Link>

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { TAGLINE } from '../constants/brand'
+import { TAGLINE, GITHUB_NEW_ISSUE_URL, GITHUB_REPO_URL } from '../constants/brand'
 import { useFetchIssues } from '../hooks/useFetchIssues'
 import { buildGitHubQuery } from '../utils/queryBuilder'
 
@@ -79,22 +79,33 @@ const Hero: React.FC = () => {
           <p className="mx-auto mt-6 max-w-lg font-sans text-base leading-relaxed text-ink-muted sm:text-lg">
             {TAGLINE}
           </p>
-          <div className="mx-auto mt-9 flex w-full max-w-md flex-row flex-wrap items-center justify-center gap-3">
-            <Link to="/issues?kind=good-first" className="btn-primary min-w-[10.5rem] flex-1 px-5 py-3.5 sm:flex-none">
+          <div className="mx-auto mt-10 flex w-full max-w-xl flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <Link to="/issues?kind=good-first" className="btn-primary w-full sm:w-auto sm:min-w-[11.5rem]">
               Find my next issue
             </Link>
-            <Link to="/bounty" className="btn-secondary min-w-[10.5rem] flex-1 px-5 py-3.5 sm:flex-none">
+            <Link to="/bounty" className="btn-secondary w-full sm:w-auto sm:min-w-[11.5rem]">
               Browse paid bounties
             </Link>
           </div>
           <p className="mt-5 font-sans text-sm text-ink-muted">
-            New to open source?{' '}
-            <Link
-              to="/beginner-guide"
+            Found a bug on this site?{' '}
+            <a
+              href={GITHUB_NEW_ISSUE_URL}
+              target="_blank"
+              rel="noreferrer"
               className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
             >
-              Read the guide
-            </Link>
+              Report it
+            </a>
+            {' · '}
+            <a
+              href={GITHUB_REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
+            >
+              Contribute
+            </a>
           </p>
         </div>
 

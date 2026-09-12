@@ -8,32 +8,32 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Source Sans 3"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Newsreader', 'Georgia', 'ui-serif', 'serif'],
+        sans: ['Geist', '"Geist Fallback"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'ui-serif', 'serif'],
       },
       colors: {
         ink: {
-          DEFAULT: '#141414',
-          soft: '#3f3f46',
-          muted: '#71717a',
+          DEFAULT: '#2e2e2e',
+          soft: '#404040',
+          muted: '#737373',
         },
         paper: {
           DEFAULT: '#fafafa',
           raised: '#ffffff',
-          line: '#e4e4e7',
+          line: '#e5e5e5',
         },
         accent: {
-          DEFAULT: '#0d9488',
+          DEFAULT: '#0f766e',
           soft: '#ccfbf1',
-          dark: '#0f766e',
+          dark: '#115e59',
         },
       },
       boxShadow: {
-        soft: '0 1px 2px rgba(20, 20, 20, 0.04), 0 8px 24px rgba(20, 20, 20, 0.04)',
+        soft: '0 1px 2px rgba(10, 10, 10, 0.04), 0 12px 32px rgba(10, 10, 10, 0.04)',
       },
-      backgroundImage: {
-        'paper-wash':
-          'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(13, 148, 136, 0.08), transparent), radial-gradient(ellipse 60% 40% at 100% 0%, rgba(20, 20, 20, 0.03), transparent)',
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.25rem',
       },
     },
   },

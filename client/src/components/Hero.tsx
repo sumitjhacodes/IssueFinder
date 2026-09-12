@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { PRODUCT_NAME, TAGLINE } from '../constants/brand'
+import { TAGLINE } from '../constants/brand'
 import { useFetchIssues } from '../hooks/useFetchIssues'
 import { buildGitHubQuery } from '../utils/queryBuilder'
 
@@ -70,8 +70,7 @@ const Hero: React.FC = () => {
     <section className="relative overflow-hidden border-b border-paper-line dark:border-zinc-800">
       <div className="page-shell pb-14 pt-16 sm:pb-20 sm:pt-24">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="font-sans text-sm font-medium tracking-wide text-ink-muted">{PRODUCT_NAME}</p>
-          <h1 className="mt-5 font-display text-5xl leading-[1.08] text-ink dark:text-white sm:text-6xl">
+          <h1 className="font-display text-5xl leading-[1.08] text-ink dark:text-white sm:text-6xl">
             Stop hunting for issues.
             <span className="mt-1 block italic text-ink-muted dark:text-zinc-400">
               Start landing PRs.

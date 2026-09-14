@@ -1,7 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="14" fill="#FAFAF9"/>
-  <!-- Simple finder mark -->
-  <circle cx="28" cy="28" r="14" stroke="#0F766E" stroke-width="6" fill="none"/>
-  <path d="M38.5 38.5L50 50" stroke="#0F766E" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="28" cy="28" r="5" fill="#E4572E"/>
+  <!-- Soft ivory tile -->
+  <rect width="64" height="64" rx="14" fill="#F7F4EE"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" stroke="#E8E2D8" stroke-width="1.5"/>
+
+  <!-- IF ligature — bold, readable at 16px -->
+  <!-- I stem + tittle -->
+  <circle cx="22" cy="15" r="3.6" fill="#171717"/>
+  <rect x="18.4" y="23" width="7.2" height="28" rx="3.6" fill="#171717"/>
+
+  <!-- F stem overlapping slightly -->
+  <rect x="30" y="15" width="7.2" height="36" rx="3.6" fill="#171717"/>
+  <!-- F top bar -->
+  <rect x="30" y="15" width="18" height="6.4" rx="3.2" fill="#171717"/>
+  <!-- F mid bar — teal accent -->
+  <rect x="30" y="29.5" width="13.5" height="5.6" rx="2.8" fill="#0F766E"/>
 </svg>

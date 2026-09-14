@@ -1,4 +1,5 @@
 {
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/((?!api/).*)",
@@ -6,4 +7,3 @@
     }
   ]
 }
-

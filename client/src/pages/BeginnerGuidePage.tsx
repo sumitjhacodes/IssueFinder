@@ -254,8 +254,8 @@ const BeginnerGuidePage: React.FC = () => {
           <Link to="/issues?kind=good-first" className="btn-primary">
             Find beginner issues
           </Link>
-          <Link to="/categories" className="btn-secondary">
-            Browse categories
+          <Link to="/starter" className="btn-secondary">
+            Browse starter projects
           </Link>
         </div>
       </section>

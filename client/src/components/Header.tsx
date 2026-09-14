@@ -75,6 +75,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
 
   const navItems = [
     { to: '/issues', label: 'Issues' },
+    { to: '/starter', label: 'Starter' },
     { to: '/bounty', label: 'Bounties' },
     { to: '/categories', label: 'Categories' },
     { to: '/repositories', label: 'Repos' },
@@ -90,7 +91,15 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
 
         <nav className="hidden items-center md:flex">
           {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkClass}>
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                item.to === '/starter'
+                  ? `nav-starter px-3 py-2 ${isActive ? 'opacity-100' : ''}`
+                  : navLinkClass({ isActive })
+              }
+            >
               {item.label}
             </NavLink>
           ))}
@@ -206,7 +215,11 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
                 key={item.to}
                 to={item.to}
                 onClick={() => setShowMobileMenu(false)}
-                className={navLinkClass}
+                className={({ isActive }) =>
+                  item.to === '/starter'
+                    ? `nav-starter px-3 py-2 ${isActive ? 'opacity-100' : ''}`
+                    : navLinkClass({ isActive })
+                }
               >
                 {item.label}
               </NavLink>

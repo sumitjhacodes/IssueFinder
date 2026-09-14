@@ -9,6 +9,7 @@ import RepositoriesPage from './pages/RepositoriesPage'
 import BeginnerGuidePage from './pages/BeginnerGuidePage'
 import CategoriesPage from './pages/CategoriesPage'
 import BountyIssuesPage from './pages/BountyIssuesPage'
+import StarterReposPage from './pages/StarterReposPage'
 import { useSearch } from './contexts/SearchContext'
 import { prefetchIssues } from './hooks/useFetchIssues'
 import { buildGitHubQuery } from './utils/queryBuilder'
@@ -49,6 +50,8 @@ const AppContent: React.FC = () => {
           <Route path="/beginner-guide" element={<BeginnerGuidePage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/bounty" element={<BountyIssuesPage />} />
+          <Route path="/starter" element={<StarterReposPage />} />
+          <Route path="/growing" element={<Navigate to="/starter" replace />} />
           <Route path="/dashboard" element={<Navigate to="/issues" replace />} />
           <Route path="/contributor/:username" element={<Navigate to="/issues" replace />} />
         </Routes>

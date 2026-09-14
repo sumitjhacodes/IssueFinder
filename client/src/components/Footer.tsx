@@ -33,6 +33,9 @@ const Footer: React.FC<FooterProps> = ({
             <Link to="/issues" className="hover:text-ink dark:hover:text-white">
               Issues
             </Link>
+            <Link to="/starter" className="hover:text-ink dark:hover:text-white">
+              Starter
+            </Link>
             <Link to="/bounty" className="hover:text-ink dark:hover:text-white">
               Bounties
             </Link>

@@ -102,6 +102,25 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
+        <section className="border-b border-paper-line dark:border-zinc-800">
+          <div className="page-shell py-20 sm:py-24">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-display text-4xl text-ink dark:text-white sm:text-5xl">
+                Too crowded on famous repos?
+              </h2>
+              <p className="mt-5 font-sans text-lg leading-relaxed text-ink-muted">
+                Starter projects are mid-size (100–2500 stars), recently pushed, and still have open
+                issues—so you have a better shot at landing a real PR.
+              </p>
+              <div className="mt-9 flex justify-center">
+                <Link to="/starter" className="btn-primary">
+                  Browse starter projects
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section>
           <div className="page-shell py-20 text-center sm:py-24">
             <h2 className="font-display text-4xl text-ink dark:text-white sm:text-5xl">

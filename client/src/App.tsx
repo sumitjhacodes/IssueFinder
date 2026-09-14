@@ -10,6 +10,7 @@ import BeginnerGuidePage from './pages/BeginnerGuidePage'
 import CategoriesPage from './pages/CategoriesPage'
 import BountyIssuesPage from './pages/BountyIssuesPage'
 import StarterReposPage from './pages/StarterReposPage'
+import DocumentMeta from './components/DocumentMeta'
 import { useSearch } from './contexts/SearchContext'
 import { prefetchIssues } from './hooks/useFetchIssues'
 import { buildGitHubQuery } from './utils/queryBuilder'
@@ -35,6 +36,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-paper dark:bg-zinc-950">
+      <DocumentMeta />
       <Header
         title="IssueFinder"
         searchTerm={searchTerm}

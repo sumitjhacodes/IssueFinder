@@ -217,6 +217,28 @@
   .page-shell {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
+
+  /* Navbar Starter — animated diagonal gradient text (BL → TR) */
+  .nav-starter {
+    @apply font-sans text-sm font-medium tracking-tight;
+    background-image: linear-gradient(
+      to top right,
+      #e4572e,
+      #0f766e,
+      #f5a899,
+      #14b8a6,
+      #e4572e
+    );
+    background-size: 220% 220%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: nav-starter-flow 2.4s linear infinite;
+  }
+
+  .nav-starter:hover {
+    opacity: 0.9;
+  }
 }
 
 @keyframes btn-outline-ltr {
@@ -225,6 +247,15 @@
   }
   to {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes nav-starter-flow {
+  from {
+    background-position: 0% 100%;
+  }
+  to {
+    background-position: 100% 0%;
   }
 }
 
@@ -246,6 +277,12 @@
   .btn-coffee::before {
     animation: none;
     background: linear-gradient(90deg, #6f4e37, #c47a3a, #f0c27a);
+    background-size: 100% 100%;
+  }
+
+  .nav-starter {
+    animation: none;
+    background-image: linear-gradient(to top right, #e4572e, #0f766e);
     background-size: 100% 100%;
   }
 }

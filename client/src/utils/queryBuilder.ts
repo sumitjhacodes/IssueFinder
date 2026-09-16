@@ -110,15 +110,21 @@ export function toGitHubLanguageQualifier(slugOrName: string): string {
 /**
  * Open issues on popular repos, with optional label + language.
  * Avoid stacking filters that zero out results.
+ * When a specific repo is selected, skip stars/language so mid-size starter repos still return issues.
  */
 export function buildGitHubQuery(params: QueryBuilderParams): string {
-  const parts = ['is:open', 'is:issue', `stars:>${MIN_REPO_STARS - 1}`]
+  const hasRepo = Boolean(params.selectedRepo?.trim())
+  const parts = ['is:open', 'is:issue']
+
+  if (!hasRepo) {
+    parts.push(`stars:>${MIN_REPO_STARS - 1}`)
+  }
 
   const label = resolveLabel(params)
   if (label) parts.push(`label:"${label}"`)
 
-  if (params.selectedRepo?.trim()) {
-    parts.push(`repo:${params.selectedRepo.trim()}`)
+  if (hasRepo) {
+    parts.push(`repo:${params.selectedRepo!.trim()}`)
   }
 
   const days = activityDays(params.selectedLastActivity)
@@ -126,7 +132,7 @@ export function buildGitHubQuery(params: QueryBuilderParams): string {
     parts.push(`updated:>${formatDate(new Date(Date.now() - days * 24 * 60 * 60 * 1000))}`)
   }
 
-  if (params.selectedLanguage) {
+  if (params.selectedLanguage && !hasRepo) {
     parts.push(toGitHubLanguageQualifier(params.selectedLanguage))
   }
 

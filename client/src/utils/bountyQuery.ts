@@ -9,6 +9,9 @@ export const BOUNTY_SOURCES: { key: BountySource; label: string }[] = [
   { key: 'algora', label: 'Algora' },
 ]
 
+/** Drop stale listings that look open but are no longer workable */
+export const BOUNTY_MAX_AGE_DAYS = 45
+
 export type BountyQueryParams = {
   source?: BountySource
   language?: string | null
@@ -22,12 +25,27 @@ export type ParsedReward = {
   amount: number
 }
 
+function formatDate(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
 /**
  * Real paid-issue discovery via GitHub Search.
+ * Prefer recently updated + unassigned so results stay available.
  */
 export function buildBountyQuery(params: BountyQueryParams = {}): string {
   const source = params.source ?? 'bounty'
-  const parts = ['is:open', 'is:issue']
+  const since = new Date(Date.now() - BOUNTY_MAX_AGE_DAYS * 24 * 60 * 60 * 1000)
+
+  const parts = [
+    'is:open',
+    'is:issue',
+    'no:assignee',
+    `updated:>${formatDate(since)}`,
+  ]
 
   switch (source) {
     case 'bountysource':
@@ -96,7 +114,6 @@ export function parseBountyReward(
             ? `£${formatMoney(amount)}`
             : `₹${formatMoney(amount)}`
 
-    // Prefer the largest cash amount found
     if (!best || amount > best.amount) {
       best = { display, amount }
     }
@@ -115,6 +132,14 @@ export function hasMoneyReward(
   body?: string | null
 ): boolean {
   return parseBountyReward(title, labels, body) !== null
+}
+
+/** True when the issue was updated within the bounty freshness window */
+export function isFreshBounty(updatedAt?: string, createdAt?: string): boolean {
+  const raw = updatedAt || createdAt
+  if (!raw) return false
+  const ageDays = (Date.now() - new Date(raw).getTime()) / 86400000
+  return ageDays <= BOUNTY_MAX_AGE_DAYS
 }
 
 export function detectBountyPlatform(

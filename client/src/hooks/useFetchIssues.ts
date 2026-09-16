@@ -23,6 +23,8 @@ export type GithubIssueItem = {
   updated_at?: string
   comments?: number
   body?: string | null
+  assignee?: { login: string } | null
+  assignees?: Array<{ login: string }>
 }
 
 export type GithubSearchResponse = {

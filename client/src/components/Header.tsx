@@ -80,6 +80,7 @@ const Header: React.FC<HeaderProps> = ({ title = 'IssueFinder', searchTerm, onSe
     { to: '/categories', label: 'Categories' },
     { to: '/repositories', label: 'Repos' },
     { to: '/beginner-guide', label: 'Guide' },
+    { to: '/learn', label: 'Learn' },
   ]
 
   return (

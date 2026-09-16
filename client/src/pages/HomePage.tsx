@@ -121,6 +121,28 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
+        <section className="border-b border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="page-shell py-20 sm:py-24">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-display text-4xl text-ink dark:text-white sm:text-5xl">
+                New to open source?
+              </h2>
+              <p className="mt-5 font-sans text-lg leading-relaxed text-ink-muted">
+                A curated library of the best articles, blogs, and full YouTube guides — then jump
+                into issues when you’re ready.
+              </p>
+              <div className="mt-9 flex flex-wrap justify-center gap-3">
+                <Link to="/learn" className="btn-primary">
+                  Browse learn guides
+                </Link>
+                <Link to="/beginner-guide" className="btn-secondary">
+                  Step-by-step path
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section>
           <div className="page-shell py-20 text-center sm:py-24">
             <h2 className="font-display text-4xl text-ink dark:text-white sm:text-5xl">

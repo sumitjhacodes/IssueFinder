@@ -150,6 +150,9 @@ const BeginnerGuidePage: React.FC = () => {
           <Link to="/issues?kind=help-wanted" className="btn-secondary">
             Help wanted
           </Link>
+          <Link to="/learn" className="btn-secondary">
+            Articles & videos
+          </Link>
         </div>
       </header>
 

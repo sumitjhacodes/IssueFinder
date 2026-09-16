@@ -4,7 +4,9 @@ import {
   buildBountyQuery,
   parseBountyReward,
   detectBountyPlatform,
+  isFreshBounty,
   BOUNTY_SOURCES,
+  BOUNTY_MAX_AGE_DAYS,
   type BountySource,
 } from '../utils/bountyQuery'
 import { MIN_REPO_STARS } from '../utils/queryBuilder'
@@ -58,12 +60,22 @@ const BountyIssues: React.FC<BountyIssuesProps> = ({ className = '' }) => {
     const raw = data?.items ?? []
     return raw
       .map((issue) => {
+        const hasAssignee =
+          Boolean(issue.assignee?.login) || (issue.assignees?.length ?? 0) > 0
+        if (hasAssignee) return null
+        if (!isFreshBounty(issue.updated_at, issue.created_at)) return null
         const reward = parseBountyReward(issue.title, issue.labels, issue.body)
         if (!reward) return null
         return { issue, reward }
       })
       .filter((row): row is NonNullable<typeof row> => row !== null)
-      .sort((a, b) => b.reward.amount - a.reward.amount)
+      // Freshest first; higher cash as a tie-breaker
+      .sort((a, b) => {
+        const aTime = new Date(a.issue.updated_at || a.issue.created_at).getTime()
+        const bTime = new Date(b.issue.updated_at || b.issue.created_at).getTime()
+        if (bTime !== aTime) return bTime - aTime
+        return b.reward.amount - a.reward.amount
+      })
   }, [data])
 
   const totalCount = data?.total_count ?? 0
@@ -120,8 +132,9 @@ const BountyIssues: React.FC<BountyIssuesProps> = ({ className = '' }) => {
             Cash bounties
           </h2>
           <p className="mt-0.5 text-sm text-ink-muted">
-            Only issues that list a money amount ($, €, £, ₹)
-            {source === 'bounty' ? ` · ★${MIN_REPO_STARS}+` : ''} · highest reward first
+            Cash amounts only ($, €, £, ₹) · updated in the last {BOUNTY_MAX_AGE_DAYS} days ·
+            unassigned
+            {source === 'bounty' ? ` · ★${MIN_REPO_STARS}+` : ''} · freshest first
           </p>
         </div>
         <p className="tabular-nums text-sm text-ink-muted" aria-live="polite">
@@ -159,7 +172,7 @@ const BountyIssues: React.FC<BountyIssuesProps> = ({ className = '' }) => {
         <div className="py-14 text-center">
           <p className="text-sm text-ink-muted">
             {rateLimitMsg ||
-              'No cash amounts found on this page. Try Next, another source, or another language.'}
+              'No fresh unassigned cash bounties on this page. Try Next, another source, or another language.'}
           </p>
           {totalPages > 1 && page < totalPages && !rateLimitMsg && (
             <button

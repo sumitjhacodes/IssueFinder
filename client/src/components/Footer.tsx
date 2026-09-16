@@ -48,6 +48,9 @@ const Footer: React.FC<FooterProps> = ({
             <Link to="/beginner-guide" className="hover:text-ink dark:hover:text-white">
               Guide
             </Link>
+            <Link to="/learn" className="hover:text-ink dark:hover:text-white">
+              Learn
+            </Link>
             <a
               href={GITHUB_NEW_ISSUE_URL}
               target="_blank"

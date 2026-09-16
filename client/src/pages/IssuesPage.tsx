@@ -81,8 +81,8 @@ const IssuesPage: React.FC = () => {
         selectedLanguage: language,
         selectedKind: kind,
         selectedRepo: repo,
-        // No date filter by default — same as GFI curated popular repos
-        selectedLastActivity: kind === 'all' ? 'last-month' : 'any',
+        // Repo-scoped: show all open issues (no freshness gate). Otherwise kind=all uses last-month.
+        selectedLastActivity: repo ? 'any' : kind === 'all' ? 'last-month' : 'any',
       }),
     [submittedSearch, language, kind, repo]
   )

@@ -11,8 +11,9 @@ const BountyIssuesPage: React.FC = () => {
           Get paid to solve issues
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted sm:text-base">
-          Only open GitHub issues that list a cash amount ($, €, £, or ₹). Token-only rewards are
-          hidden. Always confirm the payout on the issue before you start.
+          Fresh, unassigned GitHub issues with a cash amount ($, €, £, or ₹) — updated recently so
+          you’re not chasing dead listings. Token-only rewards are hidden. Always confirm the payout
+          on the issue before you start.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <a href="#bounty-list" className="btn-primary">

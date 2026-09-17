@@ -1,7 +1,11 @@
 import React, { useMemo, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import IssueList from '../components/IssueList'
-import { buildGitHubQuery, type IssueKind } from '../utils/queryBuilder'
+import {
+  buildGitHubQuery,
+  CATEGORY_TO_KIND,
+  type IssueKind,
+} from '../utils/queryBuilder'
 import { useSearch } from '../contexts/SearchContext'
 
 const LANGUAGES = [
@@ -27,20 +31,28 @@ const KINDS: { key: IssueKind; label: string }[] = [
   { key: 'all', label: 'All issues' },
   { key: 'bug', label: 'Bugs' },
   { key: 'documentation', label: 'Docs' },
+  { key: 'feature', label: 'Features' },
+  { key: 'enhancement', label: 'Enhancement' },
+  { key: 'refactor', label: 'Refactor' },
+  { key: 'testing', label: 'Testing' },
+  { key: 'performance', label: 'Performance' },
+  { key: 'security', label: 'Security' },
 ]
 
+const VALID_KINDS = new Set<IssueKind>(KINDS.map((k) => k.key))
+
 function kindFromParam(raw: string | null): IssueKind {
-  if (
-    raw === 'all' ||
-    raw === 'help-wanted' ||
-    raw === 'bug' ||
-    raw === 'documentation' ||
-    raw === 'good-first'
-  ) {
-    return raw
+  if (raw && VALID_KINDS.has(raw as IssueKind)) {
+    return raw as IssueKind
   }
-  // Default: beginner-friendly issues on popular repos
   return 'good-first'
+}
+
+/** Accept legacy ?category=good first issue links from Categories page */
+function kindFromCategoryParam(raw: string | null): IssueKind | null {
+  if (!raw) return null
+  const mapped = CATEGORY_TO_KIND[raw.trim().toLowerCase()]
+  return mapped ?? null
 }
 
 function normalizeRepo(raw: string | null): string | null {
@@ -54,7 +66,9 @@ const IssuesPage: React.FC = () => {
   const { submittedSearch } = useSearch()
   const [searchParams, setSearchParams] = useSearchParams()
   const language = searchParams.get('language')
-  const kind = kindFromParam(searchParams.get('kind'))
+  const categoryParam = searchParams.get('category')
+  const kindFromCategory = kindFromCategoryParam(categoryParam)
+  const kind = kindFromCategory ?? kindFromParam(searchParams.get('kind'))
   const repo = normalizeRepo(searchParams.get('repo'))
 
   const sync = useCallback(
@@ -68,6 +82,7 @@ const IssuesPage: React.FC = () => {
       // Persist kind when not the GFI default so links stay shareable
       if (k && k !== 'good-first') params.set('kind', k)
       if (r) params.set('repo', r)
+      // Drop legacy category once user picks an explicit kind/language
 
       setSearchParams(params, { replace: true })
     },
@@ -81,8 +96,8 @@ const IssuesPage: React.FC = () => {
         selectedLanguage: language,
         selectedKind: kind,
         selectedRepo: repo,
-        // Repo-scoped: show all open issues (no freshness gate). Otherwise kind=all uses last-month.
-        selectedLastActivity: repo ? 'any' : kind === 'all' ? 'last-month' : 'any',
+        // Repo-scoped: show that repo's open issues. Otherwise require recent updates on active repos.
+        selectedLastActivity: repo ? 'any' : 'last-month',
       }),
     [submittedSearch, language, kind, repo]
   )
@@ -97,7 +112,7 @@ const IssuesPage: React.FC = () => {
         <p className="mt-1 text-sm text-ink-muted">
           {repo
             ? `Open issues in ${repo}.`
-            : 'Browse by language — open issues on popular repos with 100+ stars.'}
+            : 'Unassigned · updated in the last 30 days · non-archived repos with 100+ stars.'}
         </p>
         {repo && (
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-paper-line bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900">

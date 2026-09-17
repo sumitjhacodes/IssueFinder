@@ -23,7 +23,12 @@ const RepositoriesPage: React.FC = () => {
           <div className="flex-1">
             <h1 className="font-display text-3xl font-medium text-ink dark:text-white">Repositories</h1>
             <p className="mt-2 max-w-2xl text-sm text-ink-muted">
-              Browse maintained projects, then jump into fresh issues that match your skills.
+              Popular repos by language (50+ stars, not archived). Want quieter mid-size repos pushed
+              in the last 30 days? Try{' '}
+              <Link to="/starter" className="font-medium text-accent hover:underline">
+                Starter
+              </Link>
+              .
             </p>
           </div>
           <Link

@@ -4,6 +4,12 @@ export type IssueKind =
   | 'help-wanted'
   | 'bug'
   | 'documentation'
+  | 'feature'
+  | 'refactor'
+  | 'testing'
+  | 'enhancement'
+  | 'performance'
+  | 'security'
 
 export type QueryBuilderParams = {
   searchTerm?: string
@@ -17,6 +23,20 @@ export type QueryBuilderParams = {
   selectedType?: string | null
   selectedFramework?: string | null
   selectedLicense?: string | null
+}
+
+/** Categories page label → Issues page kind slug */
+export const CATEGORY_TO_KIND: Record<string, IssueKind> = {
+  'good first issue': 'good-first',
+  'help wanted': 'help-wanted',
+  bug: 'bug',
+  documentation: 'documentation',
+  feature: 'feature',
+  refactor: 'refactor',
+  testing: 'testing',
+  enhancement: 'enhancement',
+  performance: 'performance',
+  security: 'security',
 }
 
 /** URL/UI slug → GitHub language name */
@@ -57,6 +77,18 @@ function labelForKind(kind: IssueKind | null | undefined): string | null {
       return 'bug'
     case 'documentation':
       return 'documentation'
+    case 'feature':
+      return 'feature'
+    case 'refactor':
+      return 'refactor'
+    case 'testing':
+      return 'testing'
+    case 'enhancement':
+      return 'enhancement'
+    case 'performance':
+      return 'performance'
+    case 'security':
+      return 'security'
     case 'all':
     case null:
     case undefined:
@@ -67,13 +99,15 @@ function labelForKind(kind: IssueKind | null | undefined): string | null {
 }
 
 function resolveLabel(params: QueryBuilderParams): string | null {
+  // Explicit category labels win over kind (used by Categories → Issues deep links)
+  if (params.selectedCategories?.length && !params.selectedCategories.includes('all')) {
+    return params.selectedCategories[0]
+  }
+
   if (params.selectedKind != null) return labelForKind(params.selectedKind)
 
   if (params.selectedDifficulty === 'intermediate') return 'help wanted'
   if (params.selectedDifficulty === 'beginner') return 'good first issue'
-  if (params.selectedCategories?.length && !params.selectedCategories.includes('all')) {
-    return params.selectedCategories[0]
-  }
   if (params.selectedType) return params.selectedType
   if (params.selectedLabels?.length) return params.selectedLabels[0]
 
@@ -108,9 +142,8 @@ export function toGitHubLanguageQualifier(slugOrName: string): string {
 }
 
 /**
- * Open issues on popular repos, with optional label + language.
- * Avoid stacking filters that zero out results.
- * When a specific repo is selected, skip stars/language so mid-size starter repos still return issues.
+ * Open, unassigned issues on popular, non-archived repos — prefer recently updated tickets.
+ * When a specific repo is selected, skip stars/language/archived/assignee so mid-size starter repos still return issues.
  */
 export function buildGitHubQuery(params: QueryBuilderParams): string {
   const hasRepo = Boolean(params.selectedRepo?.trim())
@@ -118,6 +151,8 @@ export function buildGitHubQuery(params: QueryBuilderParams): string {
 
   if (!hasRepo) {
     parts.push(`stars:>${MIN_REPO_STARS - 1}`)
+    parts.push('archived:false')
+    parts.push('no:assignee')
   }
 
   const label = resolveLabel(params)

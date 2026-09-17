@@ -22,7 +22,7 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     prefetchIssues(
-      buildGitHubQuery({ selectedKind: 'good-first', selectedLastActivity: 'any' }),
+      buildGitHubQuery({ selectedKind: 'good-first', selectedLastActivity: 'last-month' }),
       1,
       50
     )

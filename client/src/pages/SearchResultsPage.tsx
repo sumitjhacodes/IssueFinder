@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useSearch } from '../contexts/SearchContext'
 import IssueList from '../components/IssueList'
 import { buildGitHubQuery } from '../utils/queryBuilder'
-import { TAGLINE } from '../constants/brand'
 
 const SearchResultsPage: React.FC = () => {
   const { submittedSearch, clearSearch } = useSearch()
@@ -12,8 +11,9 @@ const SearchResultsPage: React.FC = () => {
     () =>
       buildGitHubQuery({
         searchTerm: submittedSearch || undefined,
-        selectedLastActivity: 'any',
-        selectedKind: 'good-first',
+        selectedLastActivity: 'last-month',
+        // Search across open unassigned work — do not lock to good-first only
+        selectedKind: 'all',
       }),
     [submittedSearch]
   )
@@ -23,7 +23,9 @@ const SearchResultsPage: React.FC = () => {
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-medium text-ink dark:text-white">Search</h1>
-          <p className="mt-1 text-sm text-ink-muted">{TAGLINE}</p>
+          <p className="mt-1 text-sm text-ink-muted">
+            Unassigned · updated in the last 30 days · non-archived repos with 100+ stars.
+          </p>
           {submittedSearch && (
             <p className="mt-2 text-sm text-ink-muted">
               Results for <span className="font-semibold text-ink dark:text-zinc-100">“{submittedSearch}”</span>{' '}

@@ -58,7 +58,7 @@ export function useFetchRepositories(
       setIsLoading(true)
       setError(null)
       try {
-        let queryParts: string[] = []
+        const queryParts: string[] = []
         
         if (language) {
           queryParts.push(`language:${language}`)
@@ -90,8 +90,9 @@ export function useFetchRepositories(
         const json: GithubRepositoriesResponse = await response.json()
         setData(json)
       } catch (err: unknown) {
-        if ((err as any)?.name === 'AbortError') return
-        setError(err as Error)
+        if (err instanceof DOMException && err.name === 'AbortError') return
+        if (err instanceof Error && err.name === 'AbortError') return
+        setError(err instanceof Error ? err : new Error(String(err)))
       } finally {
         setIsLoading(false)
       }

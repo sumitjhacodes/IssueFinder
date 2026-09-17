@@ -12,7 +12,8 @@ const steps = [
   {
     n: '02',
     title: 'Only fresh work',
-    detail: 'We surface issues updated recently and still unassigned — not tickets that sat for a year.',
+    detail:
+      'Open, unassigned issues updated in the last 30 days on non-archived repos with 100+ stars.',
   },
   {
     n: '03',
@@ -45,8 +46,8 @@ const HomePage: React.FC = () => {
                 GitHub is noisy. Your next PR shouldn’t be.
               </h2>
               <p className="mt-5 font-sans text-lg leading-relaxed text-ink-muted">
-                IssueFinder shows open, unassigned issues that were updated recently — so beginners
-                and regular contributors both find real work faster.
+                Open, unassigned issues updated in the last 30 days on non-archived repos with 100+
+                stars — then open them on GitHub.
               </p>
             </div>
           </div>
@@ -78,7 +79,7 @@ const HomePage: React.FC = () => {
               <div>
                 <h2 className="font-display text-4xl text-ink dark:text-white">Start with your language</h2>
                 <p className="mt-2 max-w-md font-sans text-ink-muted">
-                  Jump into fresh issues in the stack you already write every day.
+                  Unassigned issues updated in the last 30 days, filtered to your language.
                 </p>
               </div>
               <Link
@@ -109,8 +110,8 @@ const HomePage: React.FC = () => {
                 Too crowded on famous repos?
               </h2>
               <p className="mt-5 font-sans text-lg leading-relaxed text-ink-muted">
-                Starter projects are mid-size (100–2500 stars), recently pushed, and still have open
-                issues—so you have a better shot at landing a real PR.
+                Mid-size repos (100–2500 stars), pushed in the last 30 days, not archived — quieter
+                than mega-repos. Expand a project to see its open issues.
               </p>
               <div className="mt-9 flex justify-center">
                 <Link to="/starter" className="btn-primary">
@@ -128,15 +129,15 @@ const HomePage: React.FC = () => {
                 New to open source?
               </h2>
               <p className="mt-5 font-sans text-lg leading-relaxed text-ink-muted">
-                A curated library of the best articles, blogs, and full YouTube guides — then jump
-                into issues when you’re ready.
+                Watch curated guides or follow our step-by-step path — then jump into Issues or
+                Starter when you’re ready.
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-3">
                 <Link to="/learn" className="btn-primary">
-                  Browse learn guides
+                  Open Learn
                 </Link>
                 <Link to="/beginner-guide" className="btn-secondary">
-                  Step-by-step path
+                  Step-by-step guide
                 </Link>
               </div>
             </div>
@@ -151,10 +152,10 @@ const HomePage: React.FC = () => {
             <p className="mx-auto mt-5 max-w-lg font-sans text-lg text-ink-muted">{TAGLINE}</p>
             <div className="mx-auto mt-9 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
               <Link to="/issues" className="btn-primary">
-                Browse fresh issues
+                Browse issues
               </Link>
-              <Link to="/categories" className="btn-secondary">
-                Explore categories
+              <Link to="/starter" className="btn-secondary">
+                Browse starter projects
               </Link>
             </div>
             <p className="mx-auto mt-10 max-w-md font-sans text-sm leading-relaxed text-ink-muted">

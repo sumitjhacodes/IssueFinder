@@ -47,7 +47,7 @@ function formatRepo(repositoryUrl: string): string {
 
 const Hero: React.FC = () => {
   const previewQuery = useMemo(
-    () => buildGitHubQuery({ selectedKind: 'good-first', selectedLastActivity: 'any' }),
+    () => buildGitHubQuery({ selectedKind: 'good-first', selectedLastActivity: 'last-month' }),
     []
   )
   const { data, isLoading } = useFetchIssues(previewQuery, 1, 20)
@@ -112,7 +112,7 @@ const Hero: React.FC = () => {
         <div className="mx-auto mt-16 max-w-3xl">
           <div className="overflow-hidden rounded-2xl border border-paper-line bg-white dark:border-zinc-800 dark:bg-zinc-900">
             <div className="flex items-center justify-between border-b border-paper-line px-5 py-3.5 dark:border-zinc-800">
-              <span className="font-sans text-xs font-medium text-ink-muted">Live preview</span>
+              <span className="font-sans text-xs font-medium text-ink-muted">Issue preview</span>
               <span className="rounded-full border border-paper-line px-2 py-0.5 font-sans text-[11px] font-medium uppercase tracking-wide text-ink-muted dark:border-zinc-700">
                 {isLive ? 'From GitHub' : isLoading ? 'Loading' : 'Samples'}
               </span>

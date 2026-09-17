@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { buildGitHubQuery } from '../utils/queryBuilder'
+import { buildGitHubQuery, CATEGORY_TO_KIND } from '../utils/queryBuilder'
 import DifficultyBadge from '../components/DifficultyBadge'
 
 type Category = {
@@ -15,70 +15,70 @@ const CATEGORIES: Category[] = [
   {
     key: 'good first issue',
     label: 'Good First Issue',
-    description: 'Perfect for beginners starting their open source journey',
+    description: 'Issues labeled good first issue',
     color: 'emerald',
     difficulty: 'beginner'
   },
   {
     key: 'help wanted',
     label: 'Help Wanted',
-    description: 'Projects actively seeking contributors',
+    description: 'Issues labeled help wanted',
     color: 'blue',
     difficulty: 'intermediate'
   },
   {
     key: 'bug',
     label: 'Bug Fixes',
-    description: 'Issues that need debugging and fixing',
+    description: 'Issues labeled bug',
     color: 'red',
     difficulty: 'intermediate'
   },
   {
     key: 'feature',
     label: 'Features',
-    description: 'New functionality and enhancements',
+    description: 'Issues labeled feature',
     color: 'purple',
     difficulty: 'intermediate'
   },
   {
     key: 'documentation',
     label: 'Documentation',
-    description: 'Improve docs and write guides',
+    description: 'Issues labeled documentation',
     color: 'amber',
     difficulty: 'beginner'
   },
   {
     key: 'refactor',
     label: 'Refactoring',
-    description: 'Code improvements and optimizations',
+    description: 'Issues labeled refactor',
     color: 'indigo',
     difficulty: 'intermediate'
   },
   {
     key: 'testing',
     label: 'Testing',
-    description: 'Add tests and improve coverage',
+    description: 'Issues labeled testing',
     color: 'teal',
     difficulty: 'intermediate'
   },
   {
     key: 'enhancement',
     label: 'Enhancement',
-    description: 'Improve existing features',
+    description: 'Issues labeled enhancement',
     color: 'violet',
     difficulty: 'intermediate'
   },
   {
     key: 'performance',
     label: 'Performance',
-    description: 'Optimize speed and efficiency',
+    description: 'Issues labeled performance',
     color: 'cyan',
     difficulty: 'advanced'
   },
   {
     key: 'security',
     label: 'Security',
-    description: 'Fix vulnerabilities and improve safety',
+    description: 'Issues labeled security',
     color: 'rose',
     difficulty: 'advanced'
   }
@@ -134,7 +134,8 @@ const CategoriesPage: React.FC = () => {
         loading[category.key] = true
         try {
           const query = buildGitHubQuery({
-            selectedCategories: [category.key]
+            selectedCategories: [category.key],
+            selectedLastActivity: 'last-month',
           })
           const response = await fetch(`https://api.github.com/search/issues?q=${encodeURIComponent(query)}&per_page=1`)
           if (response.ok) {
@@ -168,7 +169,13 @@ const CategoriesPage: React.FC = () => {
 
   const handleCategoryClick = (categoryKey: string) => {
     const params = new URLSearchParams()
-    params.set('category', categoryKey)
+    const kind = CATEGORY_TO_KIND[categoryKey]
+    if (kind) {
+      params.set('kind', kind)
+    } else {
+      // Fallback for any future category not in the map
+      params.set('category', categoryKey)
+    }
     if (selectedDifficulty) {
       params.set('difficulty', selectedDifficulty)
     }
@@ -284,7 +291,8 @@ const CategoriesPage: React.FC = () => {
             Categories
           </h1>
           <p className="mt-2 text-ink-muted">
-            Find fresh issues that match your skills. Pick a type, then open it on GitHub.
+            Jump to Issues filtered by label (good first, help wanted, bug, and more). Same quality
+            rules: unassigned, updated in the last 30 days, non-archived 100+★ repos.
           </p>
         </div>
 

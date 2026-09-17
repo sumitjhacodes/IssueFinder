@@ -55,20 +55,28 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     tag: 'Essentials',
   },
   {
-    title: 'Make a Pull Request',
-    source: 'Kent C. Dodds',
+    title: 'New to open source? Here’s everything you need to get started',
+    source: 'The GitHub Blog',
     description:
-      'A focused tutorial on opening your first PR the right way — clear commits, good descriptions, and review etiquette.',
-    href: 'https://makeapullrequest.com/',
+      'GitHub’s 2025 newcomer guide — pick a project, read the repo norms, contribute beyond code, and land your first PR.',
+    href: 'https://github.blog/open-source/new-to-open-source-heres-everything-you-need-to-get-started/',
+    tag: 'Essentials',
+  },
+  {
+    title: 'How to make your first contribution to an open source project',
+    source: 'whitep4nth3r',
+    description:
+      'Practical first-contribution playbook: vet the community, pick a small issue, open a clear PR, and contribute beyond code.',
+    href: 'https://whitep4nth3r.com/blog/how-to-make-your-first-open-source-contribution/',
     tag: 'Workflow',
   },
   {
-    title: 'An Introduction to Open Source',
-    source: 'DigitalOcean',
+    title: 'How to Contribute to Open Source for the First Time',
+    source: 'Codably',
     description:
-      'Tutorial series on what open source is, how licensing works, and how communities collaborate day to day.',
-    href: 'https://www.digitalocean.com/community/tutorial_series/an-introduction-to-open-source',
-    tag: 'Mindset',
+      'Why big-name repos are the wrong first target, how to pick beginner issues, and the exact workflow maintainers expect.',
+    href: 'https://codably.dev/open-source/how-to-contribute-to-open-source-for-the-first-time',
+    tag: 'Workflow',
   },
   {
     title: 'First Timers Only',

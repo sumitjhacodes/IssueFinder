@@ -1,5 +1,5 @@
 export const TAGLINE =
-  'Browse fresh issues, starter projects with room to contribute, and cash bounties — filtered by language so you can land your next PR.'
+  'Unassigned GitHub issues updated in the last 30 days, mid-size starter repos pushed recently, and cash bounties — filter by language and open them on GitHub.'
 
 export const PRODUCT_NAME = 'IssueFinder'
 

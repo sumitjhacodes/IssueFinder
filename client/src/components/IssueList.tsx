@@ -97,7 +97,8 @@ const IssueList: React.FC<IssueListProps> = ({
   const scopeBits = [
     languageLabel && languageLabel !== 'All' ? languageLabel : null,
     `★${MIN_REPO_STARS}+`,
-    'popular repos',
+    'unassigned',
+    'updated ≤30d',
   ].filter(Boolean)
 
   return (
@@ -185,7 +186,11 @@ const IssueList: React.FC<IssueListProps> = ({
 
                 {open && (
                   <ul className="border-t border-paper-line dark:border-zinc-800">
-                    {group.issues.map((issue) => (
+                    {group.issues.map((issue) => {
+                      const isAssigned =
+                        Boolean(issue.assignee) ||
+                        (Array.isArray(issue.assignees) && issue.assignees.length > 0)
+                      return (
                       <li key={issue.id} className="border-b border-paper-line last:border-0 dark:border-zinc-800">
                         <a
                           href={issue.html_url}
@@ -201,10 +206,16 @@ const IssueList: React.FC<IssueListProps> = ({
                             {typeof issue.comments === 'number' && issue.comments > 0
                               ? ` · ${issue.comments} comments`
                               : ''}
+                            {isAssigned ? (
+                              <span className="ml-1.5 font-medium text-amber-700 dark:text-amber-400">
+                                · Assigned
+                              </span>
+                            ) : null}
                           </p>
                         </a>
                       </li>
-                    ))}
+                      )
+                    })}
                     <li className="px-4 py-2.5">
                       <a
                         href={`${group.htmlUrl}/issues?q=is%3Aopen+label%3A%22good+first+issue%22`}

@@ -64,18 +64,18 @@ const StarterReposPage: React.FC = () => {
           Starter projects
         </h1>
         <p className="mt-3 font-sans text-base leading-relaxed text-ink-muted sm:text-lg">
-          Mid-size repos ({STARTER_MIN_STARS.toLocaleString()}–{STARTER_MAX_STARS.toLocaleString()}{' '}
-          stars) pushed in the last {STARTER_MAX_PUSH_AGE_DAYS} days—with open issues. More room to
-          land a first PR than on mega-popular projects. Activity is a signal, not a merge
-          guarantee.
+          Quieter than mega-repos: mid-size ({STARTER_MIN_STARS.toLocaleString()}–
+          {STARTER_MAX_STARS.toLocaleString()} stars), pushed in the last{' '}
+          {STARTER_MAX_PUSH_AGE_DAYS} days, not archived, forks ≥ 5. Expand a repo to load its open
+          issues (that list is not limited to unassigned).
         </p>
         <p className="mt-3 font-sans text-sm text-ink-muted">
-          Prefer browsing every size?{' '}
+          Looking for popular projects by language?{' '}
           <Link
             to="/repositories"
             className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
           >
-            All repositories
+            Browse Repos
           </Link>
         </p>
       </header>

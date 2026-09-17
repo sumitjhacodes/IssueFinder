@@ -20,8 +20,8 @@ function formatDate(date: Date): string {
 }
 
 /**
- * Active mid-size repos where newcomers have more room to land a PR
- * than on mega-popular projects.
+ * Active mid-size repos (recent push) where newcomers often face less competition
+ * than on mega-popular projects. Push activity is a signal, not a merge guarantee.
  */
 export function buildStarterRepoQuery(params: StarterRepoQueryParams = {}): string {
   const pushedAfter = new Date(Date.now() - STARTER_MAX_PUSH_AGE_DAYS * 24 * 60 * 60 * 1000)

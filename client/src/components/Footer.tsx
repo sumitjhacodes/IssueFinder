@@ -39,17 +39,17 @@ const Footer: React.FC<FooterProps> = ({
             <Link to="/bounty" className="hover:text-ink dark:hover:text-white">
               Bounties
             </Link>
-            <Link to="/categories" className="hover:text-ink dark:hover:text-white">
-              Categories
-            </Link>
             <Link to="/repositories" className="hover:text-ink dark:hover:text-white">
               Repos
             </Link>
-            <Link to="/beginner-guide" className="hover:text-ink dark:hover:text-white">
-              Guide
-            </Link>
             <Link to="/learn" className="hover:text-ink dark:hover:text-white">
               Learn
+            </Link>
+            <Link to="/categories" className="hover:text-ink dark:hover:text-white">
+              Categories
+            </Link>
+            <Link to="/beginner-guide" className="hover:text-ink dark:hover:text-white">
+              Guide
             </Link>
             <a
               href={GITHUB_NEW_ISSUE_URL}

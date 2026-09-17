@@ -144,7 +144,7 @@ const CategoriesPage: React.FC = () => {
           } else {
             counts[category.key] = 0
           }
-        } catch (error) {
+        } catch {
           counts[category.key] = 0
         } finally {
           loading[category.key] = false

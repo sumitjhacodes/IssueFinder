@@ -184,7 +184,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({ className = '', languag
                   </div>
                 </article>
               ))
-            : displayItems.map((repo: any) => (
+            : displayItems.map((repo) => (
                 <article
                   key={repo.id}
                   className="group flex h-full w-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-slate-500"

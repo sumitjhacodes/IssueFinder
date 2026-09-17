@@ -15,22 +15,24 @@ export function useSearchHistory() {
           setHistory(parsed)
         }
       }
-    } catch (err) {
+    } catch {
+      // Ignore corrupt localStorage
     }
   }, [])
 
   const addToHistory = (searchTerm: string) => {
     if (!searchTerm.trim()) return
-    
+
     setHistory((prev) => {
       const filtered = prev.filter((item) => item.toLowerCase() !== searchTerm.toLowerCase().trim())
       const newHistory = [searchTerm.trim(), ...filtered].slice(0, MAX_HISTORY_ITEMS)
-      
+
       try {
         localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory))
-      } catch (err) {
+      } catch {
+        // Quota / private mode
       }
-      
+
       return newHistory
     })
   }
@@ -39,10 +41,10 @@ export function useSearchHistory() {
     setHistory([])
     try {
       localStorage.removeItem(SEARCH_HISTORY_KEY)
-    } catch (err) {
+    } catch {
+      // Ignore
     }
   }
 
   return { history, addToHistory, clearHistory }
 }
-

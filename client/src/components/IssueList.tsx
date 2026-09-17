@@ -75,7 +75,7 @@ const IssueList: React.FC<IssueListProps> = ({
     setOpenRepos({})
   }, [query])
 
-  const items = data?.items ?? []
+  const items = useMemo(() => data?.items ?? [], [data?.items])
   const groups = useMemo(() => groupByRepo(items), [items])
   const totalCount = data?.total_count ?? 0
   const totalPages = Math.min(Math.max(1, Math.ceil(totalCount / perPage)), 20)

@@ -95,9 +95,18 @@ const LearnPage: React.FC = () => {
           Complete open source guide
         </h1>
         <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-muted">
-          Curated articles, blogs, and YouTube walkthroughs — including Indian creators like Piyush
-          Garg, Coder&apos;s Gyan, Saumya Singh, Harkirat Singh, and more.
+          Videos and articles to get you started — then use Issues or Starter to find tickets on
+          GitHub.
         </p>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link to="/beginner-guide" className="btn-primary">
+            Step-by-step guide
+          </Link>
+          <Link to="/issues?kind=good-first" className="btn-secondary">
+            Find beginner issues
+          </Link>
+        </div>
 
         <div
           className="mt-8 grid grid-cols-2 gap-2 rounded-xl border border-paper-line bg-white p-1.5 dark:border-zinc-800 dark:bg-zinc-900"
@@ -131,15 +140,6 @@ const LearnPage: React.FC = () => {
             Articles & blogs
           </button>
         </div>
-
-        <p className="mt-4">
-          <Link
-            to="/beginner-guide"
-            className="font-sans text-sm font-medium text-accent hover:underline"
-          >
-            Prefer a written step-by-step path? →
-          </Link>
-        </p>
       </header>
 
       {tab === 'videos' ? (

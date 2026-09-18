@@ -16,6 +16,7 @@ import DocumentMeta from './components/DocumentMeta'
 import { useSearch } from './contexts/SearchContext'
 import { prefetchIssues } from './hooks/useFetchIssues'
 import { buildGitHubQuery } from './utils/queryBuilder'
+import { PRODUCT_NAME } from './constants/brand'
 
 const AppContent: React.FC = () => {
   const { searchTerm, setSearchTerm, submitSearch } = useSearch()
@@ -40,7 +41,7 @@ const AppContent: React.FC = () => {
     <div className="flex min-h-screen flex-col bg-paper dark:bg-zinc-950">
       <DocumentMeta />
       <Header
-        title="IssueFinder"
+        title={PRODUCT_NAME}
         searchTerm={searchTerm}
         onSearchTermChange={setSearchTerm}
         onSubmitSearch={onSubmitSearch}

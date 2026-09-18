@@ -1,10 +1,11 @@
 # IssueFinder
 
-**Find fresh issues that match your skills. Land your first PR faster.**
+Find unassigned GitHub issues, starter repos, and cash bounties — then open them on GitHub.
 
-IssueFinder helps you find **unassigned** GitHub issues updated in the last 30 days on non-archived repos (100+ stars), mid-size starter projects, and cash bounties — filtered by language.
+**Live:** [issuefinder.fun](https://issuefinder.fun)  
+**Repo:** [github.com/sumitjhacodes/IssueFinder](https://github.com/sumitjhacodes/IssueFinder)
 
-**Live:** [issuefinder.fun](https://issuefinder.fun)
+> Local folder name may be `IssueHub` on your machine; the product and GitHub repo are **IssueFinder**.
 
 ## What it does
 
@@ -14,11 +15,9 @@ IssueFinder helps you find **unassigned** GitHub issues updated in the last 30 d
 - Learn guides + beginner path
 - Dark / light theme
 
-Search → filter → open on GitHub.
-
 ## Stack
 
-- React + TypeScript + Vite
+- React + TypeScript + Vite (SPA in `client/`)
 - Tailwind CSS
 - GitHub REST API (public data)
 - Vitest + GitHub Actions CI
@@ -27,14 +26,16 @@ Search → filter → open on GitHub.
 
 ```bash
 git clone https://github.com/sumitjhacodes/IssueFinder.git
-cd IssueHub/client
+cd IssueFinder/client
+# if your clone folder is still named IssueHub:
+# cd IssueHub/client
 npm install
 npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173).
 
-### Tests
+### Tests & build
 
 ```bash
 cd client
@@ -43,36 +44,27 @@ npm run lint
 npm run build
 ```
 
-### Production build
+Output is in `client/dist` (includes prerendered SEO routes).
 
-```bash
-cd client
-npm run build
-```
+## Deploy
 
-Output is in `client/dist`.
+- **Vercel:** use the repo-root [`vercel.json`](vercel.json) (`install` / `build` / `outputDirectory` point at `client/`).
+- **Netlify:** publish `client/dist`; SPA fallback is [`client/public/_redirects`](client/public/_redirects).
 
 ## CI / merging to main
 
-Every push and pull request to `main` runs `.github/workflows/ci.yml` (lint, unit tests, production build). The job fails if any step fails.
+Every push and pull request to `main` runs `.github/workflows/ci.yml` (lint, unit tests, production build).
 
-To **block merges** when CI fails, enable branch protection on `main` in GitHub:
-
-1. Repo → **Settings** → **Branches** → **Add branch ruleset** (or classic branch protection)
-2. Target: `main`
-3. Enable **Require status checks to pass**
-4. Require check: **Lint, test, and build**
-5. Enable **Require a pull request before merging** (recommended)
-6. Optionally **Do not allow bypassing** for admins
-
-Until that rule is on, CI still runs and shows red/green on PRs, but GitHub will not auto-block the merge button.
+Enable a branch ruleset on `main` that requires a PR and the **Lint, test, and build** check.
 
 ## Contributing
 
 1. Fork the repo  
 2. Create a branch  
-3. Ensure `npm test`, `npm run lint`, and `npm run build` pass  
+3. Ensure `npm test`, `npm run lint`, and `npm run build` pass in `client/`  
 4. Open a pull request  
+
+You can also practice your first PR on IssueFinder itself — browse [open issues](https://github.com/sumitjhacodes/IssueFinder/issues), create one, or ship a fix.
 
 ## Author
 

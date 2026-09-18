@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { buildGitHubQuery, CATEGORY_TO_KIND } from '../utils/queryBuilder'
 import DifficultyBadge from '../components/DifficultyBadge'
+import { DIFFICULTY_FILTERS, FILTER_LANGUAGES } from '../constants/filters'
 
 type Category = {
   key: string
@@ -82,40 +83,6 @@ const CATEGORIES: Category[] = [
     color: 'rose',
     difficulty: 'advanced'
   }
-]
-
-const DIFFICULTY_LEVELS = [
-  {
-    key: 'beginner',
-    label: 'Beginner Friendly',
-    description: 'Perfect for first-time contributors',
-    color: 'emerald'
-  },
-  {
-    key: 'intermediate',
-    label: 'Intermediate',
-    description: 'Some experience recommended',
-    color: 'blue'
-  },
-  {
-    key: 'advanced',
-    label: 'Advanced',
-    description: 'For experienced developers',
-    color: 'purple'
-  }
-]
-
-const POPULAR_LANGUAGES = [
-  { key: 'javascript', label: 'JavaScript' },
-  { key: 'typescript', label: 'TypeScript' },
-  { key: 'python', label: 'Python' },
-  { key: 'java', label: 'Java' },
-  { key: 'go', label: 'Go' },
-  { key: 'rust', label: 'Rust' },
-  { key: 'php', label: 'PHP' },
-  { key: 'ruby', label: 'Ruby' },
-  { key: 'cpp', label: 'C++' },
-  { key: 'csharp', label: 'C#' },
 ]
 
 const CategoriesPage: React.FC = () => {
@@ -314,7 +281,7 @@ const CategoriesPage: React.FC = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              {DIFFICULTY_LEVELS.map((difficulty) => (
+              {DIFFICULTY_FILTERS.map((difficulty) => (
                 <button
                   key={difficulty.key}
                   onClick={() => handleDifficultyClick(difficulty.key)}
@@ -397,7 +364,9 @@ const CategoriesPage: React.FC = () => {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-3">
-            {POPULAR_LANGUAGES.map((lang) => (
+            {FILTER_LANGUAGES.filter(
+              (lang): lang is { key: string; label: string } => Boolean(lang.key)
+            ).map((lang) => (
               <button
                 key={lang.key}
                 onClick={() => handleLanguageClick(lang.key)}

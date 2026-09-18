@@ -9,42 +9,10 @@ import {
 } from '../utils/queryBuilder'
 import { useSearch } from '../contexts/SearchContext'
 import { ISSUES_FAQS } from '../constants/seo'
-
-const LANGUAGES = [
-  { key: null, label: 'All' },
-  { key: 'python', label: 'Python' },
-  { key: 'typescript', label: 'TypeScript' },
-  { key: 'javascript', label: 'JavaScript' },
-  { key: 'rust', label: 'Rust' },
-  { key: 'go', label: 'Go' },
-  { key: 'java', label: 'Java' },
-  { key: 'cpp', label: 'C++' },
-  { key: 'c', label: 'C' },
-  { key: 'csharp', label: 'C#' },
-  { key: 'php', label: 'PHP' },
-  { key: 'ruby', label: 'Ruby' },
-  { key: 'swift', label: 'Swift' },
-  { key: 'kotlin', label: 'Kotlin' },
-] as const
-
-const KINDS: { key: IssueKind; label: string }[] = [
-  { key: 'good-first', label: 'Good first' },
-  { key: 'help-wanted', label: 'Help wanted' },
-  { key: 'all', label: 'All issues' },
-  { key: 'bug', label: 'Bugs' },
-  { key: 'documentation', label: 'Docs' },
-  { key: 'feature', label: 'Features' },
-  { key: 'enhancement', label: 'Enhancement' },
-  { key: 'refactor', label: 'Refactor' },
-  { key: 'testing', label: 'Testing' },
-  { key: 'performance', label: 'Performance' },
-  { key: 'security', label: 'Security' },
-]
-
-const VALID_KINDS = new Set<IssueKind>(KINDS.map((k) => k.key))
+import { FILTER_LANGUAGES, ISSUE_KIND_FILTERS, VALID_ISSUE_KINDS } from '../constants/filters'
 
 function kindFromParam(raw: string | null): IssueKind {
-  if (raw && VALID_KINDS.has(raw as IssueKind)) {
+  if (raw && VALID_ISSUE_KINDS.has(raw as IssueKind)) {
     return raw as IssueKind
   }
   return 'good-first'
@@ -104,8 +72,8 @@ const IssuesPage: React.FC = () => {
     [submittedSearch, language, kind, repo]
   )
 
-  const kindLabel = KINDS.find((k) => k.key === kind)?.label ?? 'Good first'
-  const languageLabel = LANGUAGES.find((l) => l.key === language)?.label ?? 'All'
+  const kindLabel = ISSUE_KIND_FILTERS.find((k) => k.key === kind)?.label ?? 'Good first'
+  const languageLabel = FILTER_LANGUAGES.find((l) => l.key === language)?.label ?? 'All'
 
   return (
     <main className="page-shell max-w-3xl py-10 sm:py-14">
@@ -161,7 +129,7 @@ const IssuesPage: React.FC = () => {
       </header>
 
       <div className="mb-3 flex flex-wrap gap-2">
-        {KINDS.map((k) => {
+        {ISSUE_KIND_FILTERS.map((k) => {
           const active = kind === k.key
           return (
             <button
@@ -181,7 +149,7 @@ const IssuesPage: React.FC = () => {
       </div>
 
       <div className="mb-8 flex flex-wrap gap-1.5">
-        {LANGUAGES.map((lang) => {
+        {FILTER_LANGUAGES.map((lang) => {
           const active = language === lang.key || (!language && lang.key === null)
           return (
             <button

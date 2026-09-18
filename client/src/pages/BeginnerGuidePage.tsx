@@ -137,21 +137,28 @@ const BeginnerGuidePage: React.FC = () => {
       <header className="mb-12">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">Guide</p>
         <h1 className="mt-3 font-display text-4xl font-medium text-ink dark:text-white">
-          Land your first PR
+          Land your first open source PR
         </h1>
         <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-muted">
           A complete path from setup to pull request — find a beginner-friendly issue, make a small
-          change, and get it merged.
+          change, and get it merged. For the deeper playbook, read{' '}
+          <Link
+            to="/learn/how-to-contribute-to-open-source"
+            className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
+          >
+            how to contribute to open source
+          </Link>
+          .
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link to="/issues?kind=good-first" className="btn-primary">
             Find beginner issues
           </Link>
-          <Link to="/issues?kind=help-wanted" className="btn-secondary">
-            Help wanted
+          <Link to="/learn/how-to-make-your-first-pull-request" className="btn-secondary">
+            First PR guide
           </Link>
           <Link to="/learn" className="btn-secondary">
-            Articles & videos
+            All guides & videos
           </Link>
         </div>
       </header>

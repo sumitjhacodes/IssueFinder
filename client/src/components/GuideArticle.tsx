@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import type { GuideDoc } from '../content/guides/types'
 import SeoFaq from './SeoFaq'
+import ContributeToIssueFinder from './ContributeToIssueFinder'
 
 type GuideArticleProps = {
   guide: GuideDoc
@@ -102,6 +103,8 @@ const GuideArticle: React.FC<GuideArticleProps> = ({ guide }) => {
           </Link>
         </div>
       </section>
+
+      <ContributeToIssueFinder compact />
     </article>
   )
 }

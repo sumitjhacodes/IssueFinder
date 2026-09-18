@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import StarterRepoList from '../components/StarterRepoList'
+import SeoFaq from '../components/SeoFaq'
 import { useFetchStarterRepos } from '../hooks/useFetchStarterRepos'
 import {
   STARTER_MAX_PUSH_AGE_DAYS,
   STARTER_MAX_STARS,
   STARTER_MIN_STARS,
 } from '../utils/starterRepoQuery'
+import { STARTER_FAQS } from '../constants/seo'
 
 const LANGUAGES = [
   { key: null, label: 'All' },
@@ -61,7 +63,7 @@ const StarterReposPage: React.FC = () => {
           For new contributors
         </p>
         <h1 className="mt-3 font-display text-4xl text-ink dark:text-white sm:text-5xl">
-          Starter projects
+          Beginner-friendly open source projects
         </h1>
         <p className="mt-3 font-sans text-base leading-relaxed text-ink-muted sm:text-lg">
           Quieter than mega-repos: mid-size ({STARTER_MIN_STARS.toLocaleString()}–
@@ -70,13 +72,21 @@ const StarterReposPage: React.FC = () => {
           issues (that list is not limited to unassigned).
         </p>
         <p className="mt-3 font-sans text-sm text-ink-muted">
-          Looking for popular projects by language?{' '}
+          Learn how to choose projects in our{' '}
+          <Link
+            to="/learn/beginner-friendly-open-source-projects"
+            className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
+          >
+            beginner-friendly projects guide
+          </Link>
+          . Looking for popular projects by language?{' '}
           <Link
             to="/repositories"
             className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
           >
             Browse Repos
           </Link>
+          .
         </p>
       </header>
 
@@ -125,6 +135,10 @@ const StarterReposPage: React.FC = () => {
         hasNextPage={Boolean(hasNextPage)}
         onPageChange={(next) => sync({ page: next })}
       />
+
+      <div className="mx-auto max-w-2xl">
+        <SeoFaq items={STARTER_FAQS} />
+      </div>
     </main>
   )
 }

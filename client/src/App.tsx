@@ -8,6 +8,7 @@ import SearchResultsPage from './pages/SearchResultsPage'
 import RepositoriesPage from './pages/RepositoriesPage'
 import BeginnerGuidePage from './pages/BeginnerGuidePage'
 import LearnPage from './pages/LearnPage'
+import GuidePage from './pages/GuidePage'
 import CategoriesPage from './pages/CategoriesPage'
 import BountyIssuesPage from './pages/BountyIssuesPage'
 import StarterReposPage from './pages/StarterReposPage'
@@ -52,6 +53,7 @@ const AppContent: React.FC = () => {
           <Route path="/repositories" element={<RepositoriesPage />} />
           <Route path="/beginner-guide" element={<BeginnerGuidePage />} />
           <Route path="/learn" element={<LearnPage />} />
+          <Route path="/learn/:slug" element={<GuidePage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/bounty" element={<BountyIssuesPage />} />
           <Route path="/starter" element={<StarterReposPage />} />

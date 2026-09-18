@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { LEARN_ARTICLES, LEARN_VIDEOS, type LearnVideo } from '../data/learnResources'
+import { ALL_GUIDES } from '../content/guides'
+import SeoFaq from '../components/SeoFaq'
+import { LEARN_FAQS } from '../constants/seo'
 
-type LearnTab = 'videos' | 'articles'
+type LearnTab = 'guides' | 'videos' | 'articles'
 
 const tagClass =
   'font-sans text-[11px] font-medium uppercase tracking-wide text-accent dark:text-teal-300'
@@ -80,7 +83,7 @@ const VideoEmbed: React.FC<{ video: LearnVideo; priority?: boolean }> = ({ video
 const FEATURED_VIDEO_ID = 'mklEhT_RLos'
 
 const LearnPage: React.FC = () => {
-  const [tab, setTab] = useState<LearnTab>('videos')
+  const [tab, setTab] = useState<LearnTab>('guides')
   const featuredVideo = LEARN_VIDEOS.find((v) => v.youtubeId === FEATURED_VIDEO_ID)
   const indianVideos = LEARN_VIDEOS.filter((v) => v.region === 'india')
   const globalVideos = LEARN_VIDEOS.filter(
@@ -92,16 +95,17 @@ const LearnPage: React.FC = () => {
       <header className="mb-10">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">Learn</p>
         <h1 className="mt-3 font-display text-4xl font-medium text-ink dark:text-white">
-          Complete open source guide
+          Learn open source contribution
         </h1>
         <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-muted">
-          Videos and articles to get you started — then use Issues or Starter to find tickets on
-          GitHub.
+          Owned guides on how to contribute, find good first issues, open your first pull request,
+          and explore bounties — plus curated videos and articles. Then use Issues or Starter to find
+          tickets on GitHub.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link to="/beginner-guide" className="btn-primary">
-            Step-by-step guide
+          <Link to="/learn/how-to-contribute-to-open-source" className="btn-primary">
+            Start with the pillar guide
           </Link>
           <Link to="/issues?kind=good-first" className="btn-secondary">
             Find beginner issues
@@ -109,38 +113,75 @@ const LearnPage: React.FC = () => {
         </div>
 
         <div
-          className="mt-8 grid grid-cols-2 gap-2 rounded-xl border border-paper-line bg-white p-1.5 dark:border-zinc-800 dark:bg-zinc-900"
+          className="mt-8 grid grid-cols-3 gap-2 rounded-xl border border-paper-line bg-white p-1.5 dark:border-zinc-800 dark:bg-zinc-900"
           role="tablist"
           aria-label="Learn content"
         >
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'videos'}
-            onClick={() => setTab('videos')}
-            className={`rounded-lg px-3 py-2.5 font-sans text-sm font-medium tracking-tight transition ${
-              tab === 'videos'
-                ? 'bg-ink text-white dark:bg-white dark:text-ink'
-                : 'text-ink-muted hover:text-ink dark:text-zinc-400 dark:hover:text-white'
-            }`}
-          >
-            Video guides
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'articles'}
-            onClick={() => setTab('articles')}
-            className={`rounded-lg px-3 py-2.5 font-sans text-sm font-medium tracking-tight transition ${
-              tab === 'articles'
-                ? 'bg-ink text-white dark:bg-white dark:text-ink'
-                : 'text-ink-muted hover:text-ink dark:text-zinc-400 dark:hover:text-white'
-            }`}
-          >
-            Articles & blogs
-          </button>
+          {(
+            [
+              ['guides', 'Guides'],
+              ['videos', 'Videos'],
+              ['articles', 'Articles'],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={tab === id}
+              onClick={() => setTab(id)}
+              className={`rounded-lg px-3 py-2.5 font-sans text-sm font-medium tracking-tight transition ${
+                tab === id
+                  ? 'bg-ink text-white dark:bg-white dark:text-ink'
+                  : 'text-ink-muted hover:text-ink dark:text-zinc-400 dark:hover:text-white'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </header>
+
+      {tab === 'guides' ? (
+        <section role="tabpanel" aria-label="IssueFinder guides">
+          <div className="border-t border-paper-line pt-10 dark:border-zinc-800">
+            <h2 className="font-display text-2xl font-medium text-ink dark:text-white">
+              IssueFinder guides
+            </h2>
+            <p className="mt-2 text-sm text-ink-muted">
+              Original walkthroughs written for contributors who want to ship — not just read theory.
+            </p>
+            <ul className="mt-10 divide-y divide-paper-line dark:divide-zinc-800">
+              {ALL_GUIDES.map((guide) => (
+                <li key={guide.path} className="py-7">
+                  <p className={tagClass}>{guide.eyebrow}</p>
+                  <Link to={guide.path} className="group mt-2 block">
+                    <h3 className="font-display text-xl font-medium text-ink transition group-hover:text-accent dark:text-white dark:group-hover:text-teal-300">
+                      {guide.title}
+                    </h3>
+                    <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">
+                      {guide.intro}
+                    </p>
+                    <span className="mt-3 inline-flex font-sans text-sm font-semibold text-accent">
+                      Read guide →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-sm text-ink-muted">
+              Prefer a short checklist?{' '}
+              <Link
+                to="/beginner-guide"
+                className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
+              >
+                Land your first PR
+              </Link>
+              .
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       {tab === 'videos' ? (
         <section role="tabpanel" aria-label="Video guides">
@@ -186,7 +227,9 @@ const LearnPage: React.FC = () => {
             </div>
           </div>
         </section>
-      ) : (
+      ) : null}
+
+      {tab === 'articles' ? (
         <section role="tabpanel" aria-label="Articles and blogs">
           <div className="border-t border-paper-line pt-10 dark:border-zinc-800">
             <h2 className="font-display text-2xl font-medium text-ink dark:text-white">
@@ -222,7 +265,9 @@ const LearnPage: React.FC = () => {
             </ul>
           </div>
         </section>
-      )}
+      ) : null}
+
+      <SeoFaq items={LEARN_FAQS} />
 
       <section className="mt-12 border-t border-paper-line pt-10 dark:border-zinc-800">
         <h2 className="font-display text-2xl font-medium text-ink dark:text-white">
@@ -238,8 +283,8 @@ const LearnPage: React.FC = () => {
           <Link to="/starter" className="btn-secondary">
             Browse starter projects
           </Link>
-          <Link to="/beginner-guide" className="btn-secondary">
-            Our step-by-step guide
+          <Link to="/bounty" className="btn-secondary">
+            Open source bounties
           </Link>
         </div>
       </section>

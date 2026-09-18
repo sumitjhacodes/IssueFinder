@@ -29,44 +29,80 @@ const Footer: React.FC<FooterProps> = ({
             </p>
           </div>
 
-          <nav className="flex flex-wrap gap-x-5 gap-y-2 font-sans text-sm text-ink-soft dark:text-zinc-300">
-            <Link to="/issues" className="hover:text-ink dark:hover:text-white">
-              Issues
-            </Link>
-            <Link to="/starter" className="hover:text-ink dark:hover:text-white">
-              Starter
-            </Link>
-            <Link to="/bounty" className="hover:text-ink dark:hover:text-white">
-              Bounties
-            </Link>
-            <Link to="/repositories" className="hover:text-ink dark:hover:text-white">
-              Repos
-            </Link>
-            <Link to="/learn" className="hover:text-ink dark:hover:text-white">
-              Learn
-            </Link>
-            <Link to="/categories" className="hover:text-ink dark:hover:text-white">
-              Categories
-            </Link>
-            <Link to="/beginner-guide" className="hover:text-ink dark:hover:text-white">
-              Guide
-            </Link>
-            <a
-              href={GITHUB_NEW_ISSUE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink dark:hover:text-white"
-            >
-              Report a bug
-            </a>
-            <a
-              href={GITHUB_REPO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink dark:hover:text-white"
-            >
-              Contribute
-            </a>
+          <nav className="flex flex-col gap-6 sm:flex-row sm:gap-10">
+            <div>
+              <p className="font-sans text-xs font-medium uppercase tracking-wide text-ink-muted">
+                Discover
+              </p>
+              <div className="mt-3 flex flex-col gap-2 font-sans text-sm text-ink-soft dark:text-zinc-300">
+                <Link to="/issues" className="hover:text-ink dark:hover:text-white">
+                  Good first issues
+                </Link>
+                <Link to="/starter" className="hover:text-ink dark:hover:text-white">
+                  Beginner-friendly projects
+                </Link>
+                <Link to="/bounty" className="hover:text-ink dark:hover:text-white">
+                  Open source bounties
+                </Link>
+                <Link to="/repositories" className="hover:text-ink dark:hover:text-white">
+                  Popular repositories
+                </Link>
+                <Link to="/categories" className="hover:text-ink dark:hover:text-white">
+                  Issue categories
+                </Link>
+              </div>
+            </div>
+            <div>
+              <p className="font-sans text-xs font-medium uppercase tracking-wide text-ink-muted">
+                Learn
+              </p>
+              <div className="mt-3 flex flex-col gap-2 font-sans text-sm text-ink-soft dark:text-zinc-300">
+                <Link to="/learn" className="hover:text-ink dark:hover:text-white">
+                  Open source guides
+                </Link>
+                <Link
+                  to="/learn/how-to-contribute-to-open-source"
+                  className="hover:text-ink dark:hover:text-white"
+                >
+                  How to contribute
+                </Link>
+                <Link to="/learn/good-first-issues" className="hover:text-ink dark:hover:text-white">
+                  Finding good first issues
+                </Link>
+                <Link
+                  to="/learn/how-to-make-your-first-pull-request"
+                  className="hover:text-ink dark:hover:text-white"
+                >
+                  First pull request
+                </Link>
+                <Link to="/beginner-guide" className="hover:text-ink dark:hover:text-white">
+                  First PR checklist
+                </Link>
+              </div>
+            </div>
+            <div>
+              <p className="font-sans text-xs font-medium uppercase tracking-wide text-ink-muted">
+                Project
+              </p>
+              <div className="mt-3 flex flex-col gap-2 font-sans text-sm text-ink-soft dark:text-zinc-300">
+                <a
+                  href={GITHUB_NEW_ISSUE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-ink dark:hover:text-white"
+                >
+                  Report a bug
+                </a>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-ink dark:hover:text-white"
+                >
+                  Contribute to IssueFinder
+                </a>
+              </div>
+            </div>
           </nav>
 
           <div className="flex items-center gap-3 text-ink-muted">

@@ -21,12 +21,14 @@ const RepositoriesPage: React.FC = () => {
       <header className="mb-8 space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex-1">
-            <h1 className="font-display text-3xl font-medium text-ink dark:text-white">Repositories</h1>
+            <h1 className="font-display text-3xl font-medium text-ink dark:text-white">
+              Popular repositories for contributors
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-ink-muted">
               Popular repos by language (50+ stars, not archived). Want quieter mid-size repos pushed
               in the last 30 days? Try{' '}
               <Link to="/starter" className="font-medium text-accent hover:underline">
-                Starter
+                beginner-friendly starter projects
               </Link>
               .
             </p>

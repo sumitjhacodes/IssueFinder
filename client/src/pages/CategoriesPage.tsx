@@ -288,7 +288,7 @@ const CategoriesPage: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-display text-3xl font-medium text-ink dark:text-white sm:text-4xl">
-            Categories
+            Browse GitHub issues by category
           </h1>
           <p className="mt-2 text-ink-muted">
             Jump to Issues filtered by label (good first, help wanted, bug, and more). Same quality

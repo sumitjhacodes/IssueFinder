@@ -1,12 +1,14 @@
 import React, { useMemo, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import IssueList from '../components/IssueList'
+import SeoFaq from '../components/SeoFaq'
 import {
   buildGitHubQuery,
   CATEGORY_TO_KIND,
   type IssueKind,
 } from '../utils/queryBuilder'
 import { useSearch } from '../contexts/SearchContext'
+import { ISSUES_FAQS } from '../constants/seo'
 
 const LANGUAGES = [
   { key: null, label: 'All' },
@@ -108,12 +110,33 @@ const IssuesPage: React.FC = () => {
   return (
     <main className="page-shell max-w-3xl py-10 sm:py-14">
       <header className="mb-8">
-        <h1 className="font-display text-4xl text-ink dark:text-white">Issues</h1>
-        <p className="mt-1 text-sm text-ink-muted">
+        <h1 className="font-display text-4xl text-ink dark:text-white">
+          Unassigned beginner-friendly GitHub issues
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-ink-muted sm:text-base">
           {repo
             ? `Open issues in ${repo}.`
-            : 'Unassigned · updated in the last 30 days · non-archived repos with 100+ stars.'}
+            : 'Find good first issues and help-wanted tickets that are unassigned, updated in the last 30 days, and hosted on non-archived repos with 100+ stars. Filter by language, then open the issue on GitHub to contribute.'}
         </p>
+        {!repo ? (
+          <p className="mt-2 text-sm text-ink-muted">
+            New to open source? Read{' '}
+            <Link
+              to="/learn/good-first-issues"
+              className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
+            >
+              how to find good first issues
+            </Link>{' '}
+            or follow the{' '}
+            <Link
+              to="/beginner-guide"
+              className="font-medium text-ink underline decoration-paper-line underline-offset-4 hover:decoration-ink dark:text-zinc-200"
+            >
+              first PR checklist
+            </Link>
+            .
+          </p>
+        ) : null}
         {repo && (
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-paper-line bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900">
             <p className="font-sans text-sm text-ink-muted">
@@ -183,6 +206,8 @@ const IssuesPage: React.FC = () => {
         kindLabel={kindLabel}
         languageLabel={repo ? repo : languageLabel}
       />
+
+      <SeoFaq items={ISSUES_FAQS} />
     </main>
   )
 }

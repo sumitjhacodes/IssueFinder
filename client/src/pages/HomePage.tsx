@@ -129,15 +129,18 @@ const HomePage: React.FC = () => {
                 New to open source?
               </h2>
               <p className="mt-5 font-sans text-lg leading-relaxed text-ink-muted">
-                Watch curated guides or follow our step-by-step path — then jump into Issues or
-                Starter when you’re ready.
+                Read how to contribute to open source, watch curated guides, or follow our checklist
+                — then jump into Issues or Starter when you’re ready.
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-3">
-                <Link to="/learn" className="btn-primary">
-                  Open Learn
+                <Link to="/learn/how-to-contribute-to-open-source" className="btn-primary">
+                  How to contribute
+                </Link>
+                <Link to="/learn" className="btn-secondary">
+                  All guides & videos
                 </Link>
                 <Link to="/beginner-guide" className="btn-secondary">
-                  Step-by-step guide
+                  Step-by-step checklist
                 </Link>
               </div>
             </div>

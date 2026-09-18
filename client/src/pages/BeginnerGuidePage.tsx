@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import ContributeToIssueFinder from '../components/ContributeToIssueFinder'
 
 const steps = [
   {
@@ -269,6 +270,8 @@ const BeginnerGuidePage: React.FC = () => {
           </Link>
         </div>
       </section>
+
+      <ContributeToIssueFinder compact />
     </main>
   )
 }

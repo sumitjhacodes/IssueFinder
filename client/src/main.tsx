@@ -7,6 +7,9 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import { SearchProvider } from './contexts/SearchContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
+// Remove build-time SEO snapshot so refresh never flashes static markup over the app.
+document.getElementById('seo-prerender')?.remove()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>

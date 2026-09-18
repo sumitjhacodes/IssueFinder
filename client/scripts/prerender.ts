@@ -1,6 +1,7 @@
 /**
- * Post-build prerender: writes per-route HTML with correct meta, JSON-LD,
- * and crawlable body text so crawlers see content without executing JS.
+ * Post-build prerender: writes per-route HTML with correct meta + JSON-LD.
+ * Crawlable body copy is injected into a visually hidden sibling (not #root)
+ * so refresh does not flash a different UI before React mounts.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -91,15 +92,17 @@ function bodyForPath(path: PublicSeoPath): string {
         return `<section><h2>${escapeHtml(section.heading)}</h2>${paras}${bullets}</section>`
       })
       .join('')
-    return `<article data-prerender="guide"><h1>${escapeHtml(guide.title)}</h1><p>${escapeHtml(guide.intro)}</p>${sections}</article>`
+    return `<article><h1>${escapeHtml(guide.title)}</h1><p>${escapeHtml(guide.intro)}</p>${sections}</article>`
   }
 
   const heading = seo.title.split(' | ')[0] ?? seo.title
-  return `<div data-prerender="page"><h1>${escapeHtml(heading)}</h1><p>${escapeHtml(seo.description)}</p><p>Explore <a href="${SITE_ORIGIN}/issues">good first issues</a>, <a href="${SITE_ORIGIN}/starter">starter projects</a>, <a href="${SITE_ORIGIN}/bounty">open source bounties</a>, and <a href="${SITE_ORIGIN}/learn">contribution guides</a>.</p></div>`
+  return `<div><h1>${escapeHtml(heading)}</h1><p>${escapeHtml(seo.description)}</p><p>Explore <a href="${SITE_ORIGIN}/issues">good first issues</a>, <a href="${SITE_ORIGIN}/starter">starter projects</a>, <a href="${SITE_ORIGIN}/bounty">open source bounties</a>, and <a href="${SITE_ORIGIN}/learn">contribution guides</a>.</p></div>`
 }
 
-function injectBody(html: string, body: string): string {
-  return html.replace(/<div id="root"><\/div>/, `<div id="root">${body}</div>`)
+/** Keep #root empty for React; put crawlable copy off-screen (not display:none). */
+function injectSeoBody(html: string, body: string): string {
+  const block = `<div id="seo-prerender" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">${body}</div>`
+  return html.replace(/<div id="root"><\/div>/, `<div id="root"></div>\n    ${block}`)
 }
 
 function outPathForRoute(path: string): string {
@@ -119,7 +122,7 @@ function main() {
 
   for (const path of PUBLIC_SEO_PATHS) {
     let html = replaceMeta(template, path)
-    html = injectBody(html, bodyForPath(path))
+    html = injectSeoBody(html, bodyForPath(path))
     const dest = outPathForRoute(path)
     mkdirSync(dirname(dest), { recursive: true })
     writeFileSync(dest, html, 'utf8')

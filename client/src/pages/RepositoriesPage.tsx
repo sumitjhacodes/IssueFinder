@@ -35,7 +35,7 @@ const RepositoriesPage: React.FC = () => {
           </div>
           <Link
             to="/issues"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             Browse issues
           </Link>
@@ -48,47 +48,38 @@ const RepositoriesPage: React.FC = () => {
           onClick={() => setShowMobileFilters((prev) => !prev)}
           className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 dark:border-gray-700 dark:bg-gray-800 dark:text-slate-200 dark:hover:border-gray-600 dark:hover:text-white"
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
           {showMobileFilters ? 'Hide filters' : 'Show filters'}
         </button>
       </div>
 
-      {showMobileFilters && (
+      {showMobileFilters ? (
         <div className="mb-6 md:hidden">
           <FiltersPanel
             className="rounded-2xl"
-            selectedLabels={[]}
-            onToggleLabel={() => {}}
             selectedLanguage={selectedLanguage}
             onChangeLanguage={setSelectedLanguage}
             selectedLicense={selectedLicense}
             onChangeLicense={setSelectedLicense}
-            showTags={false}
-            selectedCategories={[]}
-            onToggleCategory={() => {}}
           />
         </div>
-      )}
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-        <aside className="hidden md:block md:col-span-3">
+        <aside className="hidden md:col-span-3 md:block">
           <FiltersPanel
             className="rounded-2xl md:sticky md:top-4"
-            selectedLabels={[]}
-            onToggleLabel={() => {}}
             selectedLanguage={selectedLanguage}
             onChangeLanguage={setSelectedLanguage}
             selectedLicense={selectedLicense}
             onChangeLicense={setSelectedLicense}
-            showTags={false}
-            selectedCategories={[]}
-            onToggleCategory={() => {}}
           />
         </aside>
         <div className="md:col-span-9">
-          <RepositoryList className="rounded-2xl" language={selectedLanguage} license={selectedLicense} />
+          <RepositoryList
+            className="rounded-2xl"
+            language={selectedLanguage}
+            license={selectedLicense}
+          />
         </div>
       </div>
     </main>

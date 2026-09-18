@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { LEARN_ARTICLES, LEARN_VIDEOS, type LearnVideo } from '../data/learnResources'
 import { ALL_GUIDES } from '../content/guides'
 import SeoFaq from '../components/SeoFaq'
+import ContributeToIssueFinder from '../components/ContributeToIssueFinder'
 import { LEARN_FAQS } from '../constants/seo'
 
 type LearnTab = 'guides' | 'videos' | 'articles'
@@ -288,6 +289,8 @@ const LearnPage: React.FC = () => {
           </Link>
         </div>
       </section>
+
+      <ContributeToIssueFinder compact />
     </main>
   )
 }

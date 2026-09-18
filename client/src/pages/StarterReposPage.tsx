@@ -9,23 +9,7 @@ import {
   STARTER_MIN_STARS,
 } from '../utils/starterRepoQuery'
 import { STARTER_FAQS } from '../constants/seo'
-
-const LANGUAGES = [
-  { key: null, label: 'All' },
-  { key: 'python', label: 'Python' },
-  { key: 'typescript', label: 'TypeScript' },
-  { key: 'javascript', label: 'JavaScript' },
-  { key: 'rust', label: 'Rust' },
-  { key: 'go', label: 'Go' },
-  { key: 'java', label: 'Java' },
-  { key: 'cpp', label: 'C++' },
-  { key: 'c', label: 'C' },
-  { key: 'csharp', label: 'C#' },
-  { key: 'php', label: 'PHP' },
-  { key: 'ruby', label: 'Ruby' },
-  { key: 'swift', label: 'Swift' },
-  { key: 'kotlin', label: 'Kotlin' },
-] as const
+import { FILTER_LANGUAGES } from '../constants/filters'
 
 const PER_PAGE = 24
 
@@ -91,7 +75,7 @@ const StarterReposPage: React.FC = () => {
       </header>
 
       <div className="mb-3 flex flex-wrap gap-2">
-        {LANGUAGES.map((lang) => {
+        {FILTER_LANGUAGES.map((lang) => {
           const active = language === lang.key || (lang.key === null && !language)
           return (
             <button

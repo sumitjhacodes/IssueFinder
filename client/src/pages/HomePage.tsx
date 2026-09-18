@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Hero from '../components/Hero'
 import ContributeToIssueFinder from '../components/ContributeToIssueFinder'
 import { TAGLINE, BUY_ME_A_COFFEE_URL } from '../constants/brand'
+import { FILTER_LANGUAGES } from '../constants/filters'
 
 const steps = [
   {
@@ -23,16 +24,11 @@ const steps = [
   },
 ]
 
-const languages = [
-  { label: 'Python', q: 'python' },
-  { label: 'TypeScript', q: 'typescript' },
-  { label: 'JavaScript', q: 'javascript' },
-  { label: 'Rust', q: 'rust' },
-  { label: 'Go', q: 'go' },
-  { label: 'Java', q: 'java' },
-  { label: 'C++', q: 'cpp' },
-  { label: 'Ruby', q: 'ruby' },
-]
+const languages = FILTER_LANGUAGES.filter((l) => l.key).map((l) => ({
+  label: l.label,
+  q: l.key as string,
+}))
+
 
 const HomePage: React.FC = () => {
   return (

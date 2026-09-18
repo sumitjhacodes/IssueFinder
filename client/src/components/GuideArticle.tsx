@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import type { GuideDoc } from '../content/guides/types'
+import SeoFaq from './SeoFaq'
 
 type GuideArticleProps = {
   guide: GuideDoc
@@ -54,7 +55,10 @@ const GuideArticle: React.FC<GuideArticleProps> = ({ guide }) => {
             {section.heading}
           </h2>
           {section.paragraphs.map((p) => (
-            <p key={p.slice(0, 48)} className="mt-3 text-sm leading-relaxed text-ink-muted sm:text-base">
+            <p
+              key={p.slice(0, 48)}
+              className="mt-3 text-sm leading-relaxed text-ink-muted sm:text-base"
+            >
               {p}
             </p>
           ))}
@@ -74,19 +78,10 @@ const GuideArticle: React.FC<GuideArticleProps> = ({ guide }) => {
         </section>
       ))}
 
-      <section className="mt-10 border-t border-paper-line pt-10 dark:border-zinc-800">
-        <h2 className="font-display text-2xl font-medium text-ink dark:text-white">
-          Frequently asked questions
-        </h2>
-        <dl className="mt-8 space-y-6">
-          {guide.faqs.map((faq) => (
-            <div key={faq.question}>
-              <dt className="font-medium text-ink dark:text-white">{faq.question}</dt>
-              <dd className="mt-1 text-sm leading-relaxed text-ink-muted">{faq.answer}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      <SeoFaq
+        items={guide.faqs}
+        className="mt-10 border-t border-paper-line pt-10 dark:border-zinc-800"
+      />
 
       <section className="mt-12 border-t border-paper-line pt-10 dark:border-zinc-800">
         <h2 className="font-display text-2xl font-medium text-ink dark:text-white">

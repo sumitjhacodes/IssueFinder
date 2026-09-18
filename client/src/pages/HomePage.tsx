@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Hero from '../components/Hero'
+import ContributeToIssueFinder from '../components/ContributeToIssueFinder'
 import { TAGLINE, BUY_ME_A_COFFEE_URL } from '../constants/brand'
 
 const steps = [
@@ -146,6 +147,8 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <ContributeToIssueFinder />
 
         <section>
           <div className="page-shell py-20 text-center sm:py-24">
